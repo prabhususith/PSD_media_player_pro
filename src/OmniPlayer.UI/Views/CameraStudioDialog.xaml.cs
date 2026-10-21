@@ -19,11 +19,56 @@ namespace OmniPlayer.UI.Views
         private readonly Random _rand = new();
         private string _activeEffect = "Clean";
         private readonly List<Particle> _particles = new();
+        private readonly Queue<Ellipse> _ellipsePool = new();
         private bool _isRecording = false;
         private DateTime _recordingStartTime;
         private readonly DispatcherTimer _recordingTimer;
         private string _outputPicturesDir = "";
         private string _outputVideosDir = "";
+
+        // Cached geometries and shapes for Smiling Face AR effect
+        private System.Windows.Shapes.Path? _smilePath;
+        private PathGeometry? _smileGeom;
+        private PathFigure? _smileFig;
+        private QuadraticBezierSegment? _smileSegment;
+
+        private System.Windows.Shapes.Path? _leftEyePath;
+        private PathGeometry? _leftEyeGeom;
+        private PathFigure? _leftEyeFig;
+        private QuadraticBezierSegment? _leftEyeSegment;
+
+        private System.Windows.Shapes.Path? _rightEyePath;
+        private PathGeometry? _rightEyeGeom;
+        private PathFigure? _rightEyeFig;
+        private QuadraticBezierSegment? _rightEyeSegment;
+
+        private Ellipse? _leftCheek;
+        private Ellipse? _rightCheek;
+        private bool _smileElementsInitialized = false;
+
+        private static readonly SolidColorBrush _snowBrush = new(Color.FromArgb(200, 255, 255, 255));
+        private static readonly SolidColorBrush _fireBrushRed = new(Color.FromRgb(255, 69, 0));
+        private static readonly SolidColorBrush _fireBrushOrange = new(Color.FromRgb(255, 140, 0));
+        private static readonly SolidColorBrush _fireBrushGold = new(Color.FromRgb(255, 215, 0));
+
+        private Ellipse RentEllipse()
+        {
+            if (_ellipsePool.Count > 0)
+            {
+                var el = _ellipsePool.Dequeue();
+                el.Visibility = Visibility.Visible;
+                return el;
+            }
+            var newEl = new Ellipse();
+            CanvasEffectsOverlay.Children.Add(newEl);
+            return newEl;
+        }
+
+        private void ReturnEllipse(Ellipse el)
+        {
+            el.Visibility = Visibility.Collapsed;
+            _ellipsePool.Enqueue(el);
+        }
 
         private class Particle
         {
@@ -109,6 +154,8 @@ namespace OmniPlayer.UI.Views
                 _activeEffect = tag;
                 TxtActiveEffectTag.Text = $"FX: {tag.ToUpperInvariant()}";
                 _particles.Clear();
+                _ellipsePool.Clear();
+                _smileElementsInitialized = false;
                 CanvasEffectsOverlay.Children.Clear();
             }
         }
@@ -147,6 +194,8 @@ namespace OmniPlayer.UI.Views
                     {
                         CanvasEffectsOverlay.Children.Clear();
                         _particles.Clear();
+                        _ellipsePool.Clear();
+                        _smileElementsInitialized = false;
                     }
                     break;
             }
@@ -165,6 +214,7 @@ namespace OmniPlayer.UI.Views
                 for (int i = 0; i < 4; i++)
                 {
                     double spread = (_rand.NextDouble() - 0.5) * 160.0;
+                    int colorType = _rand.Next(3);
                     var p = new Particle
                     {
                         X = headCenterX + spread,
@@ -174,22 +224,24 @@ namespace OmniPlayer.UI.Views
                         Size = 10 + _rand.NextDouble() * 18,
                         Life = 0,
                         MaxLife = 25 + _rand.Next(30),
-                        BaseColor = _rand.Next(3) switch
+                        BaseColor = colorType switch
                         {
-                            0 => Color.FromRgb(255, 69, 0),    // Red-Orange
-                            1 => Color.FromRgb(255, 140, 0),   // Dark Orange
-                            _ => Color.FromRgb(255, 215, 0)    // Gold/Yellow
+                            0 => _fireBrushRed.Color,
+                            1 => _fireBrushOrange.Color,
+                            _ => _fireBrushGold.Color
                         }
                     };
 
-                    var ellipse = new Ellipse
+                    var ellipse = RentEllipse();
+                    ellipse.Width = p.Size;
+                    ellipse.Height = p.Size * 1.4;
+                    ellipse.Fill = colorType switch
                     {
-                        Width = p.Size,
-                        Height = p.Size * 1.4,
-                        Fill = new SolidColorBrush(p.BaseColor)
+                        0 => _fireBrushRed,
+                        1 => _fireBrushOrange,
+                        _ => _fireBrushGold
                     };
                     p.Element = ellipse;
-                    CanvasEffectsOverlay.Children.Add(ellipse);
                     _particles.Add(p);
                 }
             }
@@ -205,18 +257,18 @@ namespace OmniPlayer.UI.Views
                 double opacity = 1.0 - (p.Life / p.MaxLife);
                 if (opacity <= 0 || p.Size <= 1 || p.Y < 0)
                 {
-                    if (p.Element != null) CanvasEffectsOverlay.Children.Remove(p.Element);
+                    if (p.Element is Ellipse el) ReturnEllipse(el);
                     _particles.RemoveAt(i);
                     continue;
                 }
 
-                if (p.Element is Ellipse el)
+                if (p.Element is Ellipse element)
                 {
-                    el.Width = p.Size;
-                    el.Height = p.Size * 1.4;
-                    el.Opacity = Math.Max(0, opacity);
-                    Canvas.SetLeft(el, p.X - (p.Size / 2.0));
-                    Canvas.SetTop(el, p.Y);
+                    element.Width = p.Size;
+                    element.Height = p.Size * 1.4;
+                    element.Opacity = Math.Max(0, opacity);
+                    Canvas.SetLeft(element, p.X - (p.Size / 2.0));
+                    Canvas.SetTop(element, p.Y);
                 }
             }
         }
@@ -239,14 +291,11 @@ namespace OmniPlayer.UI.Views
                         BaseColor = Colors.White
                     };
 
-                    var snowflake = new Ellipse
-                    {
-                        Width = p.Size,
-                        Height = p.Size,
-                        Fill = new SolidColorBrush(Color.FromArgb(200, 255, 255, 255))
-                    };
+                    var snowflake = RentEllipse();
+                    snowflake.Width = p.Size;
+                    snowflake.Height = p.Size;
+                    snowflake.Fill = _snowBrush;
                     p.Element = snowflake;
-                    CanvasEffectsOverlay.Children.Add(snowflake);
                     _particles.Add(p);
                 }
             }
@@ -259,7 +308,7 @@ namespace OmniPlayer.UI.Views
 
                 if (p.Y > height)
                 {
-                    if (p.Element != null) CanvasEffectsOverlay.Children.Remove(p.Element);
+                    if (p.Element is Ellipse el) ReturnEllipse(el);
                     _particles.RemoveAt(i);
                     continue;
                 }
@@ -274,78 +323,119 @@ namespace OmniPlayer.UI.Views
 
         private void UpdateSmilingFaceEffect(double width, double height)
         {
-            CanvasEffectsOverlay.Children.Clear();
-
             double centerX = width / 2.0;
             double centerY = height * 0.48;
             double headRadius = Math.Min(width, height) * 0.22;
-
-            // Neon glowing smile arc
-            var smilePath = new System.Windows.Shapes.Path
-            {
-                Stroke = new SolidColorBrush(Color.FromRgb(0, 255, 200)),
-                StrokeThickness = 5,
-                StrokeStartLineCap = PenLineCap.Round,
-                StrokeEndLineCap = PenLineCap.Round,
-                Data = Geometry.Parse($"M {centerX - headRadius * 0.55},{centerY + headRadius * 0.25} Q {centerX},{centerY + headRadius * 0.65} {centerX + headRadius * 0.55},{centerY + headRadius * 0.25}"),
-                Effect = new System.Windows.Media.Effects.DropShadowEffect
-                {
-                    Color = Color.FromRgb(0, 255, 200),
-                    BlurRadius = 14,
-                    ShadowDepth = 0,
-                    Opacity = 0.95
-                }
-            };
-            CanvasEffectsOverlay.Children.Add(smilePath);
-
-            // Glowing Eyes (Happy upward curved arcs)
             double eyeOffsetX = headRadius * 0.4;
             double eyeOffsetY = headRadius * 0.18;
 
-            var leftEye = new System.Windows.Shapes.Path
+            if (!_smileElementsInitialized || CanvasEffectsOverlay.Children.Count == 0)
             {
-                Stroke = new SolidColorBrush(Color.FromRgb(0, 255, 200)),
-                StrokeThickness = 4,
-                StrokeStartLineCap = PenLineCap.Round,
-                StrokeEndLineCap = PenLineCap.Round,
-                Data = Geometry.Parse($"M {centerX - eyeOffsetX - 16},{centerY - eyeOffsetY} Q {centerX - eyeOffsetX},{centerY - eyeOffsetY - 16} {centerX - eyeOffsetX + 16},{centerY - eyeOffsetY}"),
-                Effect = new System.Windows.Media.Effects.DropShadowEffect { Color = Color.FromRgb(0, 255, 200), BlurRadius = 10, ShadowDepth = 0 }
-            };
-            CanvasEffectsOverlay.Children.Add(leftEye);
+                CanvasEffectsOverlay.Children.Clear();
 
-            var rightEye = new System.Windows.Shapes.Path
-            {
-                Stroke = new SolidColorBrush(Color.FromRgb(0, 255, 200)),
-                StrokeThickness = 4,
-                StrokeStartLineCap = PenLineCap.Round,
-                StrokeEndLineCap = PenLineCap.Round,
-                Data = Geometry.Parse($"M {centerX + eyeOffsetX - 16},{centerY - eyeOffsetY} Q {centerX + eyeOffsetX},{centerY - eyeOffsetY - 16} {centerX + eyeOffsetX + 16},{centerY - eyeOffsetY}"),
-                Effect = new System.Windows.Media.Effects.DropShadowEffect { Color = Color.FromRgb(0, 255, 200), BlurRadius = 10, ShadowDepth = 0 }
-            };
-            CanvasEffectsOverlay.Children.Add(rightEye);
+                _smileSegment = new QuadraticBezierSegment();
+                _smileFig = new PathFigure { Segments = new PathSegmentCollection { _smileSegment }, IsClosed = false };
+                _smileGeom = new PathGeometry(new[] { _smileFig });
+                _smilePath = new System.Windows.Shapes.Path
+                {
+                    Stroke = new SolidColorBrush(Color.FromRgb(0, 255, 200)),
+                    StrokeThickness = 5,
+                    StrokeStartLineCap = PenLineCap.Round,
+                    StrokeEndLineCap = PenLineCap.Round,
+                    Data = _smileGeom,
+                    Effect = new System.Windows.Media.Effects.DropShadowEffect
+                    {
+                        Color = Color.FromRgb(0, 255, 200),
+                        BlurRadius = 14,
+                        ShadowDepth = 0,
+                        Opacity = 0.95
+                    }
+                };
 
-            // Radiant Rosy Cheek Highlight Circles
-            var leftCheek = new Ellipse
-            {
-                Width = 26,
-                Height = 18,
-                Fill = new SolidColorBrush(Color.FromArgb(120, 255, 105, 180)),
-                Effect = new System.Windows.Media.Effects.BlurEffect { Radius = 8 }
-            };
-            Canvas.SetLeft(leftCheek, centerX - eyeOffsetX - 28);
-            Canvas.SetTop(leftCheek, centerY + 8);
-            CanvasEffectsOverlay.Children.Add(leftCheek);
+                _leftEyeSegment = new QuadraticBezierSegment();
+                _leftEyeFig = new PathFigure { Segments = new PathSegmentCollection { _leftEyeSegment }, IsClosed = false };
+                _leftEyeGeom = new PathGeometry(new[] { _leftEyeFig });
+                _leftEyePath = new System.Windows.Shapes.Path
+                {
+                    Stroke = new SolidColorBrush(Color.FromRgb(0, 255, 200)),
+                    StrokeThickness = 4,
+                    StrokeStartLineCap = PenLineCap.Round,
+                    StrokeEndLineCap = PenLineCap.Round,
+                    Data = _leftEyeGeom,
+                    Effect = new System.Windows.Media.Effects.DropShadowEffect { Color = Color.FromRgb(0, 255, 200), BlurRadius = 10, ShadowDepth = 0 }
+                };
 
-            var rightCheek = new Ellipse
+                _rightEyeSegment = new QuadraticBezierSegment();
+                _rightEyeFig = new PathFigure { Segments = new PathSegmentCollection { _rightEyeSegment }, IsClosed = false };
+                _rightEyeGeom = new PathGeometry(new[] { _rightEyeFig });
+                _rightEyePath = new System.Windows.Shapes.Path
+                {
+                    Stroke = new SolidColorBrush(Color.FromRgb(0, 255, 200)),
+                    StrokeThickness = 4,
+                    StrokeStartLineCap = PenLineCap.Round,
+                    StrokeEndLineCap = PenLineCap.Round,
+                    Data = _rightEyeGeom,
+                    Effect = new System.Windows.Media.Effects.DropShadowEffect { Color = Color.FromRgb(0, 255, 200), BlurRadius = 10, ShadowDepth = 0 }
+                };
+
+                _leftCheek = new Ellipse
+                {
+                    Width = 26,
+                    Height = 18,
+                    Fill = new SolidColorBrush(Color.FromArgb(120, 255, 105, 180)),
+                    Effect = new System.Windows.Media.Effects.BlurEffect { Radius = 8 }
+                };
+
+                _rightCheek = new Ellipse
+                {
+                    Width = 26,
+                    Height = 18,
+                    Fill = new SolidColorBrush(Color.FromArgb(120, 255, 105, 180)),
+                    Effect = new System.Windows.Media.Effects.BlurEffect { Radius = 8 }
+                };
+
+                CanvasEffectsOverlay.Children.Add(_smilePath);
+                CanvasEffectsOverlay.Children.Add(_leftEyePath);
+                CanvasEffectsOverlay.Children.Add(_rightEyePath);
+                CanvasEffectsOverlay.Children.Add(_leftCheek);
+                CanvasEffectsOverlay.Children.Add(_rightCheek);
+
+                _smileElementsInitialized = true;
+            }
+
+            // Update geometry coordinates smoothly in-place with zero allocations
+            if (_smileFig != null && _smileSegment != null)
             {
-                Width = 26,
-                Height = 18,
-                Fill = new SolidColorBrush(Color.FromArgb(120, 255, 105, 180)),
-                Effect = new System.Windows.Media.Effects.BlurEffect { Radius = 8 }
-            };
-            Canvas.SetLeft(rightCheek, centerX + eyeOffsetX + 2);
-            Canvas.SetTop(rightCheek, centerY + 8);
-            CanvasEffectsOverlay.Children.Add(rightCheek);
+                _smileFig.StartPoint = new Point(centerX - headRadius * 0.55, centerY + headRadius * 0.25);
+                _smileSegment.Point1 = new Point(centerX, centerY + headRadius * 0.65);
+                _smileSegment.Point2 = new Point(centerX + headRadius * 0.55, centerY + headRadius * 0.25);
+            }
+
+            if (_leftEyeFig != null && _leftEyeSegment != null)
+            {
+                _leftEyeFig.StartPoint = new Point(centerX - eyeOffsetX - 16, centerY - eyeOffsetY);
+                _leftEyeSegment.Point1 = new Point(centerX - eyeOffsetX, centerY - eyeOffsetY - 16);
+                _leftEyeSegment.Point2 = new Point(centerX - eyeOffsetX + 16, centerY - eyeOffsetY);
+            }
+
+            if (_rightEyeFig != null && _rightEyeSegment != null)
+            {
+                _rightEyeFig.StartPoint = new Point(centerX + eyeOffsetX - 16, centerY - eyeOffsetY);
+                _rightEyeSegment.Point1 = new Point(centerX + eyeOffsetX, centerY - eyeOffsetY - 16);
+                _rightEyeSegment.Point2 = new Point(centerX + eyeOffsetX + 16, centerY - eyeOffsetY);
+            }
+
+            if (_leftCheek != null)
+            {
+                Canvas.SetLeft(_leftCheek, centerX - eyeOffsetX - 28);
+                Canvas.SetTop(_leftCheek, centerY + 8);
+            }
+
+            if (_rightCheek != null)
+            {
+                Canvas.SetLeft(_rightCheek, centerX + eyeOffsetX + 2);
+                Canvas.SetTop(_rightCheek, centerY + 8);
+            }
         }
 
         private void UpdateMatrixRainEffect(double width, double height)

@@ -1,12 +1,50 @@
-# Changelog â€” PSD Media Player Pro Edition
+# Changelog - PSD Media Player Pro Edition
 
 All notable changes to the PSD Media Player Pro Edition project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Author: Prabhu Kannan (PSD Technologies)  
-Support Contact: prabhukannanmail@gmail.com  
+Author: Prabhu Kannan (PSD Technologies)
+Support Contact: prabhukannanmail@gmail.com
+
+---
+
+## [2.5.0-patch3] - 2026-10-21
+
+### Optimized and Hardened
+- **Zero-Copy Memory Pooling in Live Stream Recorder**:
+  - Refactored LiveStreamRecorder.cs to utilize System.Buffers.ArrayPool<byte>.Shared across both direct stream capture (64 KB rented chunks) and HLS segment ingest (32 KB rented chunks).
+  - Completely eliminated continuous byte array allocations and Large Object Heap (LOH) fragmentation during multi-hour recordings.
+  - Added strict URI scheme validation enforcing safe protocol boundaries (http, https, rtsp, rtmp, mms).
+
+- **O(1) Pre-Indexed Catalogs and Static Regex Ingest in IPTV Manager**:
+  - Replaced O(N^2) duplicate stream URL scans during M3U parsing in LiveTvManager.cs with an O(1) HashSet<string> membership check.
+  - Implemented category pre-indexing in Dictionary<string, List<LiveTvChannel>> for O(1) filtered partition retrieval.
+  - Memoized thread-safe immutable _cachedSnapshot to provide zero-allocation reads for AllChannels.
+  - Pre-compiled static regex patterns (RegexLogo, RegexCountry, RegexGroup) avoiding per-line compilation churn.
+
+- **Object Pooling and In-Place Geometry Recycling in Camera AR Studio**:
+  - Introduced RentEllipse() and ReturnEllipse() queue pooling in CameraStudioDialog.xaml.cs to recycle particle elements across fire and snow simulation loops.
+  - Cached static brushes for particle colors to eliminate brush instantiation on every frame tick.
+  - Refactored UpdateSmilingFaceEffect to cache PathGeometry, PathFigure, and QuadraticBezierSegment instances, mutating coordinate points in-place and eliminating string parsing (Geometry.Parse) and memory allocations at 60 FPS.
+
+- **Idle CPU Cycle Optimization for Mouse Monitor and Window Shell**:
+  - Optimized CursorMonitorTimer in MainWindow.xaml.cs to stop execution entirely while the window is in normal windowed mode or minimized, and start only upon entering fullscreen mode.
+  - Adjusted polling interval from 50ms to 100ms, reducing Win32 GetCursorPos and ScreenToClient interop overhead by 50% while maintaining instantaneous UI reveals.
+
+- **Single-Pass Metric Accumulation and Batch Binding in Media Library**:
+  - Optimized MediaLibraryDashboardDialog.xaml.cs to compute video counts, audio counts, and total storage bytes in a single traversal pass instead of 3 successive LINQ passes.
+  - Replaced individual ObservableCollection.Add calls with direct collection assignment to ItemsSource, eliminating thousands of redundant layout measure and arrange passes on the WPF dispatcher.
+
+- **Unified Network Connection Pool and Codec Memoization on Android**:
+  - Unified OkHttp client instances across NetworkStreamManager.kt and PlayerEngineController.kt, sharing a single HTTP/2 socket pool and dispatcher worker threads.
+  - Pre-compiled M3U tag regexes in NetworkStreamManager.kt.
+  - Memoized hardware codec capabilities in HardwareCodecManager.kt to avoid repeated MediaServer Binder IPC calls.
+
+- **Automated Regression Test Suite**:
+  - Created OmniPlayer.Core.Tests with 12 unit tests covering Equalizer DSP ISO frequencies, gain bounds clamping, sound technology and room echo enum mapping, curated catalog categorization, channel search filtering, and SRT/VTT subtitle cue parsing.
+  - Test run verified with 100% pass rate.
 
 ---
 
@@ -73,7 +111,8 @@ Support Contact: prabhukannanmail@gmail.com
 - **Android Platform Source Optimizations**:
   - Eliminated deprecated MediaSessionCompat transport flags in AudioService.kt.
   - Replaced legacy MediaCodecList static calls with modern MediaCodecList(REGULAR_CODECS) in HardwareCodecManager.kt.
-  - Upgraded deprecated esources.getColor to ContextCompat.getColor in EqualizerBottomSheet.kt.
+  - Upgraded deprecated 
+esources.getColor to ContextCompat.getColor in EqualizerBottomSheet.kt.
   - Cleaned unused parameters and variables in PlayerActivity.kt and EqualizerController.kt.
   - Re-compiled both Release and Debug APKs with 0 compiler warnings and verified dual v1/v2 signatures.
 

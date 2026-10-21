@@ -19,8 +19,8 @@ if (-not (Test-Path $DotnetPath)) {
 }
 
 # Gracefully terminate running instances to ensure dist files are unlocked
-Get-Process -Name "*PSDPlayer*", "*OmniPlayer*" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-Start-Sleep -Milliseconds 500
+Get-Process | Where-Object { $_.ProcessName -like "*PSDPlayer*" -or $_.ProcessName -like "*OmniPlayer*" } | Stop-Process -Force -ErrorAction SilentlyContinue
+Start-Sleep -Milliseconds 800
 
 Write-Host "`n[STEP 1/5] Verifying & Exporting 110+ Theme Packs..." -ForegroundColor Yellow
 $ExportScript = Join-Path $RepoRoot "scripts\export-themes.ps1"

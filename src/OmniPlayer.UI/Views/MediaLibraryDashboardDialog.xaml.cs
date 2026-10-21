@@ -176,9 +176,17 @@ namespace OmniPlayer.UI.Views
 
         private void UpdateMetricsAndFilters()
         {
-            int videos = _masterCatalog.Count(x => x.Category == "Video");
-            int music = _masterCatalog.Count(x => x.Category == "Audio");
-            long totalBytes = _masterCatalog.Sum(x => x.SizeBytes);
+            // Single-pass metric accumulation
+            int videos = 0;
+            int music = 0;
+            long totalBytes = 0;
+
+            foreach (var item in _masterCatalog)
+            {
+                if (item.Category == "Video") videos++;
+                else if (item.Category == "Audio") music++;
+                totalBytes += item.SizeBytes;
+            }
 
             TxtTotalVideos.Text = videos.ToString();
             TxtTotalMusic.Text = music.ToString();
@@ -192,27 +200,41 @@ namespace OmniPlayer.UI.Views
         private void ApplySearchAndCategoryFilter()
         {
             string query = TxtSearchFilter?.Text?.Trim() ?? "";
+            bool hasQuery = !string.IsNullOrEmpty(query);
 
-            var filtered = _masterCatalog.Where(item =>
+            var allList = new List<MediaLibraryItem>();
+            var videoList = new List<MediaLibraryItem>();
+            var audioList = new List<MediaLibraryItem>();
+
+            // Single-pass batch filtering
+            foreach (var item in _masterCatalog)
             {
-                bool matchesType = _activeCategoryFilter == "All" || item.Category.Equals(_activeCategoryFilter, StringComparison.OrdinalIgnoreCase);
-                bool matchesQuery = string.IsNullOrEmpty(query) ||
+                bool matchesQuery = !hasQuery ||
                                     item.Title.Contains(query, StringComparison.OrdinalIgnoreCase) ||
                                     item.Extension.Contains(query, StringComparison.OrdinalIgnoreCase) ||
                                     item.DirectoryPath.Contains(query, StringComparison.OrdinalIgnoreCase);
-                return matchesType && matchesQuery;
-            }).ToList();
 
-            _filteredAll.Clear();
-            foreach (var item in filtered) _filteredAll.Add(item);
+                if (!matchesQuery) continue;
 
-            _filteredVideos.Clear();
-            foreach (var item in _masterCatalog.Where(x => x.Category == "Video" && (string.IsNullOrEmpty(query) || x.Title.Contains(query, StringComparison.OrdinalIgnoreCase))))
-                _filteredVideos.Add(item);
+                if (_activeCategoryFilter == "All" || item.Category.Equals(_activeCategoryFilter, StringComparison.OrdinalIgnoreCase))
+                {
+                    allList.Add(item);
+                }
 
-            _filteredAudio.Clear();
-            foreach (var item in _masterCatalog.Where(x => x.Category == "Audio" && (string.IsNullOrEmpty(query) || x.Title.Contains(query, StringComparison.OrdinalIgnoreCase))))
-                _filteredAudio.Add(item);
+                if (item.Category == "Video")
+                {
+                    videoList.Add(item);
+                }
+                else if (item.Category == "Audio")
+                {
+                    audioList.Add(item);
+                }
+            }
+
+            // Direct binding to eliminate ObservableCollection per-item notification churn
+            DataGridAllMedia.ItemsSource = allList;
+            DataGridVideos.ItemsSource = videoList;
+            DataGridAudio.ItemsSource = audioList;
         }
 
         private void TxtSearchFilter_TextChanged(object sender, TextChangedEventArgs e)

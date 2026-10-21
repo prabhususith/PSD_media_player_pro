@@ -25,8 +25,16 @@ foreach ($rid in $Rids) {
     $TargetFolder = Join-Path $OutputDir $rid
     Write-Host "`n>>> Publishing Single-File Portable for [$rid] -> $TargetFolder" -ForegroundColor Yellow
 
+    Get-Process | Where-Object { $_.ProcessName -like "*PSDPlayer*" -or $_.ProcessName -like "*OmniPlayer*" } | Stop-Process -Force -ErrorAction SilentlyContinue
+    Start-Sleep -Milliseconds 500
+
     if (Test-Path $TargetFolder) {
-        Remove-Item -Recurse -Force $TargetFolder
+        try {
+            Remove-Item -Recurse -Force $TargetFolder -ErrorAction Stop
+        } catch {
+            Write-Host "Warning: Could not completely remove $TargetFolder, cleaning contents..." -ForegroundColor Yellow
+            Get-ChildItem -Path $TargetFolder -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
+        }
     }
     New-Item -ItemType Directory -Force -Path $TargetFolder | Out-Null
 

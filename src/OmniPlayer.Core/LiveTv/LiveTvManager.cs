@@ -14,8 +14,15 @@ namespace OmniPlayer.Core.LiveTv
         public static LiveTvManager Instance => _instance.Value;
 
         private readonly List<LiveTvChannel> _channels = new();
+        private readonly HashSet<string> _channelUrls = new(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, List<LiveTvChannel>> _channelsByCategory = new(StringComparer.OrdinalIgnoreCase);
+        private IReadOnlyList<LiveTvChannel>? _cachedSnapshot;
         private readonly object _lock = new();
         private static readonly HttpClient _httpClient;
+
+        private static readonly Regex RegexLogo = new(@"tvg-logo=""([^""]+)""", RegexOptions.Compiled);
+        private static readonly Regex RegexCountry = new(@"tvg-country=""([^""]+)""", RegexOptions.Compiled);
+        private static readonly Regex RegexGroup = new(@"group-title=""([^""]+)""", RegexOptions.Compiled);
 
         static LiveTvManager()
         {
@@ -34,7 +41,28 @@ namespace OmniPlayer.Core.LiveTv
         {
             get
             {
-                lock (_lock) return _channels.ToList();
+                lock (_lock)
+                {
+                    return _cachedSnapshot ??= _channels.AsReadOnly();
+                }
+            }
+        }
+
+        private void InvalidateCache()
+        {
+            _cachedSnapshot = null;
+            _channelsByCategory.Clear();
+            foreach (var ch in _channels)
+            {
+                if (!string.IsNullOrEmpty(ch.Category))
+                {
+                    if (!_channelsByCategory.TryGetValue(ch.Category, out var list))
+                    {
+                        list = new List<LiveTvChannel>();
+                        _channelsByCategory[ch.Category] = list;
+                    }
+                    list.Add(ch);
+                }
             }
         }
 
@@ -95,29 +123,40 @@ namespace OmniPlayer.Core.LiveTv
         {
             lock (_lock)
             {
-                var queryable = _channels.AsEnumerable();
+                IEnumerable<LiveTvChannel> source;
 
                 if (!string.IsNullOrWhiteSpace(category) && !category.StartsWith("All", StringComparison.OrdinalIgnoreCase))
                 {
-                    queryable = queryable.Where(c => c.Category.Equals(category, StringComparison.OrdinalIgnoreCase));
+                    if (_channelsByCategory.TryGetValue(category, out var catList))
+                    {
+                        source = catList;
+                    }
+                    else
+                    {
+                        return new List<LiveTvChannel>();
+                    }
+                }
+                else
+                {
+                    source = _channels;
                 }
 
                 if (!string.IsNullOrWhiteSpace(country) && !country.StartsWith("All", StringComparison.OrdinalIgnoreCase))
                 {
-                    queryable = queryable.Where(c => c.Country.Equals(country, StringComparison.OrdinalIgnoreCase));
+                    source = source.Where(c => c.Country.Equals(country, StringComparison.OrdinalIgnoreCase));
                 }
 
                 if (!string.IsNullOrWhiteSpace(query))
                 {
                     string q = query.Trim().ToLowerInvariant();
-                    queryable = queryable.Where(c =>
+                    source = source.Where(c =>
                         c.Name.ToLowerInvariant().Contains(q) ||
                         c.Category.ToLowerInvariant().Contains(q) ||
                         c.Language.ToLowerInvariant().Contains(q) ||
                         c.Country.ToLowerInvariant().Contains(q));
                 }
 
-                return queryable.ToList();
+                return source.ToList();
             }
         }
 
@@ -139,7 +178,9 @@ namespace OmniPlayer.Core.LiveTv
                 else
                 {
                     _channels.Insert(0, channel);
+                    _channelUrls.Add(channel.StreamUrl);
                 }
+                InvalidateCache();
             }
         }
 
@@ -193,15 +234,15 @@ namespace OmniPlayer.Core.LiveTv
                         currentChannel = new LiveTvChannel();
 
                         // Parse logo
-                        var logoMatch = Regex.Match(trimmed, @"tvg-logo=""([^""]+)""");
+                        var logoMatch = RegexLogo.Match(trimmed);
                         if (logoMatch.Success) currentChannel.LogoUrl = logoMatch.Groups[1].Value;
 
                         // Parse country
-                        var countryMatch = Regex.Match(trimmed, @"tvg-country=""([^""]+)""");
+                        var countryMatch = RegexCountry.Match(trimmed);
                         if (countryMatch.Success) currentChannel.Country = countryMatch.Groups[1].Value.ToUpperInvariant();
 
                         // Parse category / group-title
-                        var groupMatch = Regex.Match(trimmed, @"group-title=""([^""]+)""");
+                        var groupMatch = RegexGroup.Match(trimmed);
                         string group = groupMatch.Success ? groupMatch.Groups[1].Value : defaultCategory;
 
                         // Parse channel name
@@ -224,8 +265,8 @@ namespace OmniPlayer.Core.LiveTv
                         {
                             currentChannel.StreamUrl = trimmed;
 
-                            // Avoid duplicate URLs
-                            if (!_channels.Any(c => c.StreamUrl.Equals(trimmed, StringComparison.OrdinalIgnoreCase)))
+                            // O(1) duplicate check via HashSet
+                            if (_channelUrls.Add(trimmed))
                             {
                                 _channels.Add(currentChannel);
                                 count++;
@@ -234,6 +275,11 @@ namespace OmniPlayer.Core.LiveTv
                             currentChannel = null;
                         }
                     }
+                }
+
+                if (count > 0)
+                {
+                    InvalidateCache();
                 }
             }
             return count;
@@ -418,6 +464,17 @@ namespace OmniPlayer.Core.LiveTv
             AddMusicChannels();
             AddScienceTechChannels();
             AddDocumentaryChannels();
+
+            lock (_lock)
+            {
+                _channelUrls.Clear();
+                foreach (var c in _channels)
+                {
+                    if (!string.IsNullOrEmpty(c.StreamUrl))
+                        _channelUrls.Add(c.StreamUrl);
+                }
+                InvalidateCache();
+            }
         }
 
         private void AddIndianNationalChannels()

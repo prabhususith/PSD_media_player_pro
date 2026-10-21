@@ -18,46 +18,55 @@ object HardwareCodecManager {
         val maxResolution: String
     )
 
+    @Volatile
+    private var cachedCapabilities: List<CodecCapability>? = null
+
     fun getHardwareCapabilities(): List<CodecCapability> {
-        val list = mutableListOf<CodecCapability>()
-        val codecInfos = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
-        } else {
-            @Suppress("DEPRECATION")
-            (0 until MediaCodecList.getCodecCount()).map { MediaCodecList.getCodecInfoAt(it) }.toTypedArray()
-        }
+        cachedCapabilities?.let { return it }
+        return synchronized(this) {
+            cachedCapabilities?.let { return@synchronized it }
 
-        for (info in codecInfos) {
-            if (info.isEncoder) continue
+            val list = mutableListOf<CodecCapability>()
+            val codecInfos = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+            } else {
+                @Suppress("DEPRECATION")
+                (0 until MediaCodecList.getCodecCount()).map { MediaCodecList.getCodecInfoAt(it) }.toTypedArray()
+            }
 
-            val supportedTypes = info.supportedTypes
-            for (type in supportedTypes) {
-                if (type.startsWith("video/")) {
-                    val isHw = isHardwareCodec(info)
-                    val caps = try {
-                        info.getCapabilitiesForType(type)
-                    } catch (e: Exception) {
-                        null
-                    }
-                    val videoCaps = caps?.videoCapabilities
-                    val maxRes = if (videoCaps != null) {
-                        "${videoCaps.supportedWidths.upper}x${videoCaps.supportedHeights.upper}"
-                    } else {
-                        "Auto"
-                    }
+            for (info in codecInfos) {
+                if (info.isEncoder) continue
 
-                    list.add(
-                        CodecCapability(
-                            codecName = info.name,
-                            mimeType = type,
-                            isHardwareAccelerated = isHw,
-                            maxResolution = maxRes
+                val supportedTypes = info.supportedTypes
+                for (type in supportedTypes) {
+                    if (type.startsWith("video/")) {
+                        val isHw = isHardwareCodec(info)
+                        val caps = try {
+                            info.getCapabilitiesForType(type)
+                        } catch (e: Exception) {
+                            null
+                        }
+                        val videoCaps = caps?.videoCapabilities
+                        val maxRes = if (videoCaps != null) {
+                            "${videoCaps.supportedWidths.upper}x${videoCaps.supportedHeights.upper}"
+                        } else {
+                            "Auto"
+                        }
+
+                        list.add(
+                            CodecCapability(
+                                codecName = info.name,
+                                mimeType = type,
+                                isHardwareAccelerated = isHw,
+                                maxResolution = maxRes
+                            )
                         )
-                    )
+                    }
                 }
             }
+            cachedCapabilities = list
+            list
         }
-        return list
     }
 
     fun isHardwareCodec(info: MediaCodecInfo): Boolean {

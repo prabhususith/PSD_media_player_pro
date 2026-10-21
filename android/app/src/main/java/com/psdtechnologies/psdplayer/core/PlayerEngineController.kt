@@ -42,12 +42,6 @@ class PlayerEngineController(private val context: Context) {
     }
     var currentAspectRatioMode: AspectRatioMode = AspectRatioMode.FIT
 
-    private val okHttpClient = OkHttpClient.Builder()
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(20, TimeUnit.SECONDS)
-        .retryOnConnectionFailure(true)
-        .build()
-
     init {
         initializePlayer()
     }
@@ -64,7 +58,7 @@ class PlayerEngineController(private val context: Context) {
             .setPrioritizeTimeOverSizeThresholds(true)
             .build()
 
-        val httpDataSourceFactory = OkHttpDataSource.Factory(okHttpClient)
+        val httpDataSourceFactory = OkHttpDataSource.Factory(NetworkStreamManager.sharedHttpClient)
             .setUserAgent(NetworkStreamManager.USER_AGENT)
 
         val dataSourceFactory = DefaultDataSource.Factory(context, httpDataSourceFactory)

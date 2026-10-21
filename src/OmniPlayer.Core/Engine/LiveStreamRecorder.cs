@@ -52,9 +52,14 @@ namespace OmniPlayer.Core.Engine
 
         public void StartRecording(string streamUrl, string channelOrMediaTitle)
         {
-            if (string.IsNullOrWhiteSpace(streamUrl))
+            if (string.IsNullOrWhiteSpace(streamUrl) ||
+                (!streamUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
+                 !streamUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase) &&
+                 !streamUrl.StartsWith("rtsp://", StringComparison.OrdinalIgnoreCase) &&
+                 !streamUrl.StartsWith("rtmp://", StringComparison.OrdinalIgnoreCase) &&
+                 !streamUrl.StartsWith("mms://", StringComparison.OrdinalIgnoreCase)))
             {
-                RecordingError?.Invoke("Invalid or empty stream URL.");
+                RecordingError?.Invoke("Invalid or unsupported stream URL protocol.");
                 return;
             }
 
@@ -187,20 +192,27 @@ namespace OmniPlayer.Core.Engine
             }
 
             using var stream = await response.Content.ReadAsStreamAsync(token).ConfigureAwait(false);
-            byte[] buffer = new byte[65536];
-            int bytesRead;
-            var lastUpdate = DateTime.UtcNow;
-
-            while (!token.IsCancellationRequested && (bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, token).ConfigureAwait(false)) > 0)
+            byte[] buffer = System.Buffers.ArrayPool<byte>.Shared.Rent(65536);
+            try
             {
-                await fileStream.WriteAsync(buffer, 0, bytesRead, token).ConfigureAwait(false);
-                RecordedBytes += bytesRead;
+                int bytesRead;
+                var lastUpdate = DateTime.UtcNow;
 
-                if ((DateTime.UtcNow - lastUpdate).TotalMilliseconds >= 500)
+                while (!token.IsCancellationRequested && (bytesRead = await stream.ReadAsync(buffer.AsMemory(0, buffer.Length), token).ConfigureAwait(false)) > 0)
                 {
-                    lastUpdate = DateTime.UtcNow;
-                    RecordingProgress?.Invoke(_stopwatch.Elapsed, RecordedBytes);
+                    await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), token).ConfigureAwait(false);
+                    RecordedBytes += bytesRead;
+
+                    if ((DateTime.UtcNow - lastUpdate).TotalMilliseconds >= 500)
+                    {
+                        lastUpdate = DateTime.UtcNow;
+                        RecordingProgress?.Invoke(_stopwatch.Elapsed, RecordedBytes);
+                    }
                 }
+            }
+            finally
+            {
+                System.Buffers.ArrayPool<byte>.Shared.Return(buffer);
             }
         }
 
@@ -269,17 +281,29 @@ namespace OmniPlayer.Core.Engine
                             downloadedSegments.Remove(old);
                         }
 
-                        // Download segment and append
+                        // Download segment and append with pooled streaming buffer
                         try
                         {
                             using var segReq = new HttpRequestMessage(HttpMethod.Get, segmentUrl);
                             segReq.Headers.Add("Referer", "https://www.google.com/");
-                            using var segRes = await _httpClient.SendAsync(segReq, token).ConfigureAwait(false);
+                            using var segRes = await _httpClient.SendAsync(segReq, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
                             if (segRes.IsSuccessStatusCode)
                             {
-                                byte[] segmentBytes = await segRes.Content.ReadAsByteArrayAsync(token).ConfigureAwait(false);
-                                await fileStream.WriteAsync(segmentBytes, 0, segmentBytes.Length, token).ConfigureAwait(false);
-                                RecordedBytes += segmentBytes.Length;
+                                using var segStream = await segRes.Content.ReadAsStreamAsync(token).ConfigureAwait(false);
+                                byte[] segBuf = System.Buffers.ArrayPool<byte>.Shared.Rent(32768);
+                                try
+                                {
+                                    int segRead;
+                                    while ((segRead = await segStream.ReadAsync(segBuf.AsMemory(0, segBuf.Length), token).ConfigureAwait(false)) > 0)
+                                    {
+                                        await fileStream.WriteAsync(segBuf.AsMemory(0, segRead), token).ConfigureAwait(false);
+                                        RecordedBytes += segRead;
+                                    }
+                                }
+                                finally
+                                {
+                                    System.Buffers.ArrayPool<byte>.Shared.Return(segBuf);
+                                }
 
                                 if ((DateTime.UtcNow - lastUpdate).TotalMilliseconds >= 500)
                                 {

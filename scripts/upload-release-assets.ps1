@@ -17,6 +17,9 @@ $release = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/$
 $uploadUrlTemplate = $release.upload_url
 
 $filesToUpload = @(
+    @{ Path = "dist\apk\PSDPlayer-Pro-v2.5.0-Release-universal.apk"; ContentType = "application/vnd.android.package-archive" },
+    @{ Path = "dist\apk\PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk"; ContentType = "application/vnd.android.package-archive" },
+    @{ Path = "dist\apk\PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk"; ContentType = "application/vnd.android.package-archive" },
     @{ Path = "dist\PSDPlayer.exe"; ContentType = "application/octet-stream" },
     @{ Path = "dist\msi\PSDPlayer-Enterprise-x64.msi"; ContentType = "application/octet-stream" },
     @{ Path = "dist\installer\PSDPlayer-Pro-Setup-v2.5.0-x64.exe"; ContentType = "application/octet-stream" },

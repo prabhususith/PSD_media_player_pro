@@ -135,10 +135,9 @@ namespace OmniPlayer.UI
                 _osdTimer.Stop();
             };
 
-            // High-precision mouse cursor monitor & 10s auto-hide timer (50ms interval)
-            _cursorMonitorTimer.Interval = TimeSpan.FromMilliseconds(50);
+            // Precision mouse cursor monitor & auto-hide timer for fullscreen mode (100ms interval)
+            _cursorMonitorTimer.Interval = TimeSpan.FromMilliseconds(100);
             _cursorMonitorTimer.Tick += CursorMonitorTimer_Tick;
-            _cursorMonitorTimer.Start();
 
             // Hook managers
             ThemeManager.Instance.ThemeChanged += OnThemeChanged;
@@ -1225,6 +1224,15 @@ namespace OmniPlayer.UI
 
         private void CursorMonitorTimer_Tick(object? sender, EventArgs e)
         {
+            if (!_isFullscreen || WindowState == WindowState.Minimized || !IsVisible)
+            {
+                if (Mouse.OverrideCursor != null)
+                {
+                    Mouse.OverrideCursor = null;
+                }
+                return;
+            }
+
             var hwnd = new WindowInteropHelper(this).Handle;
             if (hwnd == IntPtr.Zero || !IsLoaded) return;
 
@@ -1656,6 +1664,7 @@ namespace OmniPlayer.UI
                 if (BorderTopMenu != null) BorderTopMenu.Visibility = Visibility.Collapsed;
                 if (BorderStatusBar != null) BorderStatusBar.Visibility = Visibility.Collapsed;
                 _isFullscreen = true;
+                _cursorMonitorTimer.Start();
 
                 ShowOsd("Fullscreen Mode (Taskbar Concealed | F11 / Esc to exit | H to toggle UI)");
                 _lastMouseMoveTime = DateTime.UtcNow;
@@ -1664,6 +1673,7 @@ namespace OmniPlayer.UI
             else
             {
                 _isFullscreen = false;
+                _cursorMonitorTimer.Stop();
                 _controlsHidden = false;
                 _lastMouseMoveTime = DateTime.UtcNow;
                 Mouse.OverrideCursor = null;

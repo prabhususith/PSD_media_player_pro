@@ -22,11 +22,14 @@ object NetworkStreamManager {
         val resolution: String = "1080p"
     )
 
-    private val httpClient = OkHttpClient.Builder()
+    val sharedHttpClient: OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(20, TimeUnit.SECONDS)
         .retryOnConnectionFailure(true)
         .build()
+
+    private val GROUP_REGEX = Regex("group-title=\"([^\"]+)\"")
+    private val LOGO_REGEX = Regex("tvg-logo=\"([^\"]+)\"")
 
     const val USER_AGENT = "PSD-Media-Player-Android/2.5.0 (Linux; Android; Mobile; Redmi Note 4)"
 
@@ -37,7 +40,7 @@ object NetworkStreamManager {
             .build()
 
         try {
-            val response = httpClient.newCall(request).execute()
+            val response = sharedHttpClient.newCall(request).execute()
             if (!response.isSuccessful) return@withContext getCuratedFallbackCatalog()
             val content = response.body?.string() ?: return@withContext getCuratedFallbackCatalog()
             parseM3u(content)
@@ -62,13 +65,13 @@ object NetworkStreamManager {
                 if (commaIndex != -1 && commaIndex < trimmed.length - 1) {
                     currentName = trimmed.substring(commaIndex + 1).trim()
                 }
-                // Parse group-title
-                val groupMatch = Regex("group-title=\"([^\"]+)\"").find(trimmed)
+                // Parse group-title with precompiled regex
+                val groupMatch = GROUP_REGEX.find(trimmed)
                 if (groupMatch != null) {
                     currentGroup = groupMatch.groupValues[1]
                 }
-                // Parse tvg-logo
-                val logoMatch = Regex("tvg-logo=\"([^\"]+)\"").find(trimmed)
+                // Parse tvg-logo with precompiled regex
+                val logoMatch = LOGO_REGEX.find(trimmed)
                 if (logoMatch != null) {
                     currentLogo = logoMatch.groupValues[1]
                 }
