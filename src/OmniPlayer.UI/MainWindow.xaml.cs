@@ -1426,140 +1426,195 @@ namespace OmniPlayer.UI
             ShowOsd("Next Chapter / Track");
         }
 
-        // ================= Smooth Seeking & Timeline Scrubbing (YouTube Standard) =================
-        private void SliderTimeline_MouseEnter(object sender, MouseEventArgs e)
+        // ================= Smooth Seeking & High-Precision Timeline =================
+        // Seek Bar Hover Preview state (disabled by default as per user directive)
+        private bool _enableHoverPreview = false;
+
+        private void EnsureTotalDuration()
         {
+            if (_totalDuration.TotalSeconds <= 0)
+            {
+                if (_isVlcActive)
+                {
+                    var len = VlcEngineController.Instance.Length;
+                    if (len.TotalSeconds > 0)
+                    {
+                        _totalDuration = len;
+                        string totalStr = $"{len:hh\\:mm\\:ss}";
+                        if (TxtTimeTotal != null) TxtTimeTotal.Text = totalStr;
+                        if (TxtModernTimeTotal != null) TxtModernTimeTotal.Text = totalStr;
+                    }
+                }
+                else if (PlayerMediaElement.NaturalDuration.HasTimeSpan && PlayerMediaElement.NaturalDuration.TimeSpan.TotalSeconds > 0)
+                {
+                    _totalDuration = PlayerMediaElement.NaturalDuration.TimeSpan;
+                    string totalStr = $"{_totalDuration:hh\\:mm\\:ss}";
+                    if (TxtTimeTotal != null) TxtTimeTotal.Text = totalStr;
+                    if (TxtModernTimeTotal != null) TxtModernTimeTotal.Text = totalStr;
+                }
+            }
+        }
+
+        private void SeekToFraction(double fraction)
+        {
+            fraction = Math.Clamp(fraction, 0.0, 1.0);
+            EnsureTotalDuration();
+
+            double targetSecs = fraction * _totalDuration.TotalSeconds;
+            var target = TimeSpan.FromSeconds(targetSecs);
+
+            if (_isVlcActive)
+            {
+                // Immediate proportional and timestamp seeking across all formats
+                VlcEngineController.Instance.Position = (float)fraction;
+                if (targetSecs > 0)
+                {
+                    VlcEngineController.Instance.SeekToTime(target);
+                }
+            }
+            else
+            {
+                PlayerMediaElement.Position = target;
+            }
+
+            if (OmniAudioEngine.Instance.IsActive)
+            {
+                OmniAudioEngine.Instance.Position = target;
+            }
+
+            double sliderVal = fraction * 1000.0;
+            if (SliderTimeline != null) SliderTimeline.Value = sliderVal;
+            if (SliderModernTimeline != null) SliderModernTimeline.Value = sliderVal;
+
+            string elapsed = $"{target:hh\\:mm\\:ss}";
+            if (TxtTimeElapsed != null) TxtTimeElapsed.Text = elapsed;
+            if (TxtModernTimeElapsed != null) TxtModernTimeElapsed.Text = elapsed;
+
             if (_totalDuration.TotalSeconds > 0)
             {
-                UpdateSeekHoverPreview(sender as Slider ?? SliderTimeline, e);
+                ShowOsd($"Seek: {elapsed} / {_totalDuration:hh\\:mm\\:ss}");
             }
-        }
-
-        private void SliderTimeline_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (PopupSeekPreview != null) PopupSeekPreview.IsOpen = false;
-            if (PopupModernSeekPreview != null) PopupModernSeekPreview.IsOpen = false;
-        }
-
-        private void UpdateSeekHoverPreview(Slider slider, MouseEventArgs e)
-        {
-            if (slider == null || slider.ActualWidth <= 0 || _totalDuration.TotalSeconds <= 0)
+            else
             {
-                if (PopupSeekPreview != null) PopupSeekPreview.IsOpen = false;
-                if (PopupModernSeekPreview != null) PopupModernSeekPreview.IsOpen = false;
-                return;
+                ShowOsd($"Seek: {(int)(fraction * 100)}%");
             }
+        }
 
-            var pt = e.GetPosition(slider);
-            double fraction = Math.Clamp(pt.X / slider.ActualWidth, 0.0, 1.0);
+        private void ShowSeekTimePopup(Slider slider, double mouseX, double fraction)
+        {
+            EnsureTotalDuration();
+
             double targetSecs = fraction * _totalDuration.TotalSeconds;
             string timeStr = TimeSpan.FromSeconds(targetSecs).ToString(@"hh\:mm\:ss");
-            string pctStr = $"{(fraction * 100.0):0.0}%";
 
             bool isModern = slider == SliderModernTimeline;
             var popup = isModern ? PopupModernSeekPreview : PopupSeekPreview;
             var timeTxt = isModern ? TxtModernSeekPreviewTime : TxtSeekPreviewTime;
-            var pctTxt = isModern ? TxtModernSeekPreviewPercent : TxtSeekPreviewPercent;
 
             if (timeTxt != null) timeTxt.Text = timeStr;
-            if (pctTxt != null) pctTxt.Text = pctStr;
 
             if (popup != null)
             {
                 popup.PlacementTarget = slider;
-                popup.HorizontalOffset = pt.X - 42;
-                popup.VerticalOffset = -10;
+                popup.HorizontalOffset = mouseX - 35;
+                popup.VerticalOffset = -12;
                 if (!popup.IsOpen) popup.IsOpen = true;
             }
         }
 
+        private void HideSeekTimePopup(Slider? slider)
+        {
+            if (PopupSeekPreview != null && PopupSeekPreview.IsOpen) PopupSeekPreview.IsOpen = false;
+            if (PopupModernSeekPreview != null && PopupModernSeekPreview.IsOpen) PopupModernSeekPreview.IsOpen = false;
+        }
+
         private void SliderTimeline_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (e.ChangedButton != MouseButton.Left) return;
+
             var slider = sender as Slider ?? SliderTimeline;
-            if (slider != null && slider.ActualWidth > 0 && _totalDuration.TotalSeconds > 0)
-            {
-                var pt = e.GetPosition(slider);
-                double fraction = Math.Clamp(pt.X / slider.ActualWidth, 0.0, 1.0);
-                double targetVal = fraction * 1000.0;
-                slider.Value = targetVal;
-                SeekToSlider(targetVal);
-            }
+            if (slider == null || slider.ActualWidth <= 0) return;
+
             _isDraggingSlider = true;
+            slider.CaptureMouse();
+
+            var pt = e.GetPosition(slider);
+            double fraction = Math.Clamp(pt.X / slider.ActualWidth, 0.0, 1.0);
+            SeekToFraction(fraction);
+
+            // Display time of that scene in popup default
+            ShowSeekTimePopup(slider, pt.X, fraction);
+
+            e.Handled = true;
         }
 
         private void SliderTimeline_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             var slider = sender as Slider ?? SliderTimeline;
-            if (slider != null && slider.ActualWidth > 0 && _totalDuration.TotalSeconds > 0)
-            {
-                UpdateSeekHoverPreview(slider, e);
+            if (slider == null || slider.ActualWidth <= 0) return;
 
-                if (e.LeftButton == MouseButtonState.Pressed && _isDraggingSlider)
-                {
-                    var pt = e.GetPosition(slider);
-                    double fraction = Math.Clamp(pt.X / slider.ActualWidth, 0.0, 1.0);
-                    double targetVal = fraction * 1000.0;
-                    slider.Value = targetVal;
-                    double targetSecs = fraction * _totalDuration.TotalSeconds;
-                    string t = $"{TimeSpan.FromSeconds(targetSecs):hh\\:mm\\:ss}";
-                    if (TxtTimeElapsed != null) TxtTimeElapsed.Text = t;
-                    if (TxtModernTimeElapsed != null) TxtModernTimeElapsed.Text = t;
-                    ShowOsd($"Scrub: {t} / {_totalDuration:hh\\:mm\\:ss}");
-                }
+            var pt = e.GetPosition(slider);
+            double fraction = Math.Clamp(pt.X / slider.ActualWidth, 0.0, 1.0);
+
+            if (_isDraggingSlider && e.LeftButton == MouseButtonState.Pressed)
+            {
+                SeekToFraction(fraction);
+                ShowSeekTimePopup(slider, pt.X, fraction);
+                e.Handled = true;
+            }
+            else if (_enableHoverPreview)
+            {
+                ShowSeekTimePopup(slider, pt.X, fraction);
+            }
+            else
+            {
+                HideSeekTimePopup(slider);
             }
         }
 
         private void SliderTimeline_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            _isDraggingSlider = false;
             var slider = sender as Slider ?? SliderTimeline;
-            if (slider != null && slider.ActualWidth > 0 && _totalDuration.TotalSeconds > 0)
+            if (_isDraggingSlider)
             {
-                var pt = e.GetPosition(slider);
-                double fraction = Math.Clamp(pt.X / slider.ActualWidth, 0.0, 1.0);
-                double targetVal = fraction * 1000.0;
-                slider.Value = targetVal;
-                SeekToSlider(targetVal);
+                if (slider != null && slider.ActualWidth > 0)
+                {
+                    slider.ReleaseMouseCapture();
+                    var pt = e.GetPosition(slider);
+                    double fraction = Math.Clamp(pt.X / slider.ActualWidth, 0.0, 1.0);
+                    SeekToFraction(fraction);
+                }
+                _isDraggingSlider = false;
+                HideSeekTimePopup(slider);
+                e.Handled = true;
+            }
+        }
+
+        private void SliderTimeline_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (!_enableHoverPreview && !_isDraggingSlider)
+            {
+                HideSeekTimePopup(sender as Slider);
+            }
+        }
+
+        private void SliderTimeline_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (!_isDraggingSlider)
+            {
+                HideSeekTimePopup(sender as Slider);
             }
         }
 
         private void SliderTimeline_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (!IsLoaded) return;
-            if (_isDraggingSlider && _totalDuration.TotalSeconds > 0)
-            {
-                double targetSecs = (e.NewValue / 1000.0) * _totalDuration.TotalSeconds;
-                string t = $"{TimeSpan.FromSeconds(targetSecs):hh\\:mm\\:ss}";
-                if (TxtTimeElapsed != null) TxtTimeElapsed.Text = t;
-                if (TxtModernTimeElapsed != null) TxtModernTimeElapsed.Text = t;
-            }
+            // Visual position updates from player timers
         }
 
         private void SeekToSlider(double sliderValue)
         {
-            if (_totalDuration.TotalSeconds > 0)
-            {
-                double targetSecs = (sliderValue / 1000.0) * _totalDuration.TotalSeconds;
-                var target = TimeSpan.FromSeconds(targetSecs);
-
-                if (_isVlcActive)
-                {
-                    VlcEngineController.Instance.SeekToTime(target);
-                }
-                else
-                {
-                    PlayerMediaElement.Position = target;
-                }
-
-                if (OmniAudioEngine.Instance.IsActive)
-                {
-                    OmniAudioEngine.Instance.Position = target;
-                }
-
-                SliderTimeline.Value = sliderValue;
-                SliderModernTimeline.Value = sliderValue;
-                ShowOsd($"Seek: {target:hh\\:mm\\:ss} / {_totalDuration:hh\\:mm\\:ss}");
-            }
+            SeekToFraction(sliderValue / 1000.0);
         }
 
         private void SliderVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

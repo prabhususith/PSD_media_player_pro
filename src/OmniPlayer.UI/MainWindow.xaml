@@ -13,6 +13,109 @@
         MouseMove="Window_MouseMove"
         MouseWheel="Window_MouseWheel">
     
+    <Window.Resources>
+        <!-- High-Tech Modern Seek Bar Thumb Style -->
+        <Style x:Key="ModernSeekBarThumbStyle" TargetType="{x:Type Thumb}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Height" Value="14"/>
+            <Setter Property="Width" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Grid>
+                            <Ellipse x:Name="ThumbGlow" Width="14" Height="14"
+                                     Fill="{DynamicResource OmniAccentBrush}"
+                                     Stroke="#FFFFFF" StrokeThickness="2">
+                                <Ellipse.Effect>
+                                    <DropShadowEffect BlurRadius="6" ShadowDepth="1" Color="#000000" Opacity="0.75"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ThumbGlow" Property="Width" Value="16"/>
+                                <Setter TargetName="ThumbGlow" Property="Height" Value="16"/>
+                                <Setter TargetName="ThumbGlow" Property="StrokeThickness" Value="2.5"/>
+                            </Trigger>
+                            <Trigger Property="IsDragging" Value="True">
+                                <Setter TargetName="ThumbGlow" Property="Width" Value="18"/>
+                                <Setter TargetName="ThumbGlow" Property="Height" Value="18"/>
+                                <Setter TargetName="ThumbGlow" Property="StrokeThickness" Value="3"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- RepeatButton Style for Track -->
+        <Style x:Key="ModernSeekBarTrackButtonStyle" TargetType="{x:Type RepeatButton}">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border Background="Transparent">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern High-Precision Seek Bar Slider Style -->
+        <Style x:Key="ModernSeekBarStyle" TargetType="{x:Type Slider}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Slider}">
+                        <Border Background="Transparent" Height="24" VerticalAlignment="Center">
+                            <Grid VerticalAlignment="Center">
+                                <!-- Background Rail -->
+                                <Border x:Name="TrackBackground" Height="5" CornerRadius="2.5"
+                                        Background="#38383C" VerticalAlignment="Center"/>
+
+                                <!-- Track Component with Decrease/Thumb/Increase -->
+                                <Track x:Name="PART_Track">
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton Style="{StaticResource ModernSeekBarTrackButtonStyle}"
+                                                      Command="{x:Static Slider.DecreaseLarge}">
+                                            <Border x:Name="ActiveProgressRail" Height="5" CornerRadius="2.5,0,0,2.5"
+                                                    Background="{DynamicResource OmniAccentBrush}"/>
+                                        </RepeatButton>
+                                    </Track.DecreaseRepeatButton>
+                                    <Track.Thumb>
+                                        <Thumb Style="{StaticResource ModernSeekBarThumbStyle}"/>
+                                    </Track.Thumb>
+                                    <Track.IncreaseRepeatButton>
+                                        <RepeatButton Style="{StaticResource ModernSeekBarTrackButtonStyle}"
+                                                      Command="{x:Static Slider.IncreaseLarge}"/>
+                                    </Track.IncreaseRepeatButton>
+                                </Track>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="TrackBackground" Property="Height" Value="7"/>
+                                <Setter TargetName="TrackBackground" Property="CornerRadius" Value="3.5"/>
+                                <Setter TargetName="ActiveProgressRail" Property="Height" Value="7"/>
+                                <Setter TargetName="ActiveProgressRail" Property="CornerRadius" Value="3.5,0,0,3.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> <!-- Menu Bar -->
@@ -363,27 +466,24 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock x:Name="TxtModernTimeElapsed" Text="00:00:00" FontSize="11" Foreground="{DynamicResource OmniMutedForegroundBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
 
-                        <!-- Floating Modern Seek Time Preview Popup -->
+                        <!-- Floating Modern Seek Time Popup -->
                         <Popup x:Name="PopupModernSeekPreview" Placement="Top" PlacementTarget="{Binding ElementName=SliderModernTimeline}"
                                AllowsTransparency="True" StaysOpen="False" IsHitTestVisible="False">
-                            <Border Background="#F0181818" BorderBrush="{DynamicResource OmniAccentBrush}" BorderThickness="1.5"
-                                    CornerRadius="6" Padding="10,5">
+                            <Border Background="#F218181A" BorderBrush="{DynamicResource OmniAccentBrush}" BorderThickness="1.5"
+                                    CornerRadius="4" Padding="8,3">
                                 <Border.Effect>
-                                    <DropShadowEffect BlurRadius="12" ShadowDepth="3" Color="#000000" Opacity="0.85"/>
+                                    <DropShadowEffect BlurRadius="8" ShadowDepth="2" Color="#000000" Opacity="0.8"/>
                                 </Border.Effect>
-                                <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock x:Name="TxtModernSeekPreviewTime" Text="00:00:00" FontWeight="Bold" FontSize="13" Foreground="#FFFFFF" HorizontalAlignment="Center"/>
-                                    <TextBlock x:Name="TxtModernSeekPreviewPercent" Text="0.0%" FontSize="10" Foreground="{DynamicResource OmniAccentBrush}" HorizontalAlignment="Center"/>
-                                </StackPanel>
+                                <TextBlock x:Name="TxtModernSeekPreviewTime" Text="00:00:00" FontWeight="SemiBold" FontSize="12" Foreground="#FFFFFF" HorizontalAlignment="Center"/>
                             </Border>
                         </Popup>
 
                         <Slider x:Name="SliderModernTimeline" Grid.Column="1"
+                                Style="{StaticResource ModernSeekBarStyle}"
                                 Minimum="0" Maximum="1000" Value="0"
                                 SmallChange="1" LargeChange="10"
-                                IsMoveToPointEnabled="True"
-                                PreviewMouseDown="SliderTimeline_PreviewMouseDown"
-                                PreviewMouseUp="SliderTimeline_PreviewMouseUp"
+                                PreviewMouseLeftButtonDown="SliderTimeline_PreviewMouseDown"
+                                PreviewMouseLeftButtonUp="SliderTimeline_PreviewMouseUp"
                                 PreviewMouseMove="SliderTimeline_PreviewMouseMove"
                                 MouseEnter="SliderTimeline_MouseEnter"
                                 MouseLeave="SliderTimeline_MouseLeave"
@@ -459,28 +559,25 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Floating Seek Time Preview Popup (YouTube Style) -->
+                <!-- Floating Seek Time Popup -->
                 <Popup x:Name="PopupSeekPreview" Placement="Top" PlacementTarget="{Binding ElementName=SliderTimeline}"
                        AllowsTransparency="True" StaysOpen="False" IsHitTestVisible="False">
-                    <Border Background="#F0181818" BorderBrush="{DynamicResource OmniAccentBrush}" BorderThickness="1.5"
-                            CornerRadius="6" Padding="10,5">
+                    <Border Background="#F218181A" BorderBrush="{DynamicResource OmniAccentBrush}" BorderThickness="1.5"
+                            CornerRadius="4" Padding="8,3">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="12" ShadowDepth="3" Color="#000000" Opacity="0.85"/>
+                            <DropShadowEffect BlurRadius="8" ShadowDepth="2" Color="#000000" Opacity="0.8"/>
                         </Border.Effect>
-                        <StackPanel HorizontalAlignment="Center">
-                            <TextBlock x:Name="TxtSeekPreviewTime" Text="00:00:00" FontWeight="Bold" FontSize="13" Foreground="#FFFFFF" HorizontalAlignment="Center"/>
-                            <TextBlock x:Name="TxtSeekPreviewPercent" Text="0.0%" FontSize="10" Foreground="{DynamicResource OmniAccentBrush}" HorizontalAlignment="Center"/>
-                        </StackPanel>
+                        <TextBlock x:Name="TxtSeekPreviewTime" Text="00:00:00" FontWeight="SemiBold" FontSize="12" Foreground="#FFFFFF" HorizontalAlignment="Center"/>
                     </Border>
                 </Popup>
 
-                <!-- Slider with IsMoveToPointEnabled for smooth direct seek on click -->
+                <!-- Modern Seek Bar Slider -->
                 <Slider x:Name="SliderTimeline"
+                        Style="{StaticResource ModernSeekBarStyle}"
                         Minimum="0" Maximum="1000" Value="0"
                         SmallChange="1" LargeChange="10"
-                        IsMoveToPointEnabled="True"
-                        PreviewMouseDown="SliderTimeline_PreviewMouseDown"
-                        PreviewMouseUp="SliderTimeline_PreviewMouseUp"
+                        PreviewMouseLeftButtonDown="SliderTimeline_PreviewMouseDown"
+                        PreviewMouseLeftButtonUp="SliderTimeline_PreviewMouseUp"
                         PreviewMouseMove="SliderTimeline_PreviewMouseMove"
                         MouseEnter="SliderTimeline_MouseEnter"
                         MouseLeave="SliderTimeline_MouseLeave"

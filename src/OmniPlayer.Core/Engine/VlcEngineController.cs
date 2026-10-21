@@ -230,6 +230,11 @@ namespace OmniPlayer.Core.Engine
         {
             if (_mediaPlayer != null)
             {
+                if (Length.TotalMilliseconds > 0)
+                {
+                    float pos = (float)(time.TotalMilliseconds / Length.TotalMilliseconds);
+                    _mediaPlayer.Position = Math.Clamp(pos, 0f, 1f);
+                }
                 _mediaPlayer.Time = (long)time.TotalMilliseconds;
             }
         }
