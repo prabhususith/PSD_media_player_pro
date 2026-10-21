@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>12</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>OmniPlayer.Core</RootNamespace>
+    <AssemblyName>OmniPlayer.Core</AssemblyName>
+    <Version>2.5.0</Version>
+    <Authors>Prabhu Kannan</Authors>
+    <Company>PSD Technologies</Company>
+    <Product>PSD Media Player Pro Edition</Product>
+    <Copyright>Copyright © 2026 Prabhu Kannan (PSD Technologies). All Rights Reserved.</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LibVLCSharp" Version="3.10.2" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+  </ItemGroup>
+</Project>

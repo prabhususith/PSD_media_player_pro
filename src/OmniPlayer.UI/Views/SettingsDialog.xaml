@@ -1,0 +1,360 @@
+<Window x:Class="OmniPlayer.UI.Views.SettingsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Omni Player Pro - Settings &amp; Advanced Preferences"
+        Height="620" Width="820"
+        MinHeight="550" MinWidth="750"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource OmniBackgroundBrush}"
+        Foreground="{DynamicResource OmniForegroundBrush}">
+    
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Title -->
+            <RowDefinition Height="*"/>    <!-- Tabbed Settings Categories -->
+            <RowDefinition Height="Auto"/> <!-- Action Buttons -->
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <Border Grid.Row="0" Margin="0,0,0,14" BorderBrush="{DynamicResource OmniBorderBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,10">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="⚙ Settings &amp; Advanced Engine Configuration" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource OmniAccentBrush}"/>
+                <TextBlock Text=" (v2.5.0 Pro Studio Edition)" FontSize="13" Foreground="{DynamicResource OmniMutedForegroundBrush}" VerticalAlignment="Center" Margin="6,0,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Tabbed Settings Content -->
+        <TabControl Grid.Row="1" Background="{DynamicResource OmniSurfaceBrush}" BorderBrush="{DynamicResource OmniBorderBrush}">
+            
+            <!-- TAB 1: GENERAL -->
+            <TabItem Header="  General  ">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <GroupBox Header="Playback &amp; Session" Margin="0,0,0,14" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}">
+                            <StackPanel Margin="10">
+                                <CheckBox x:Name="ChkResumePlayback" Content="Remember playback position and resume where left off" IsChecked="True" Margin="0,0,0,8" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                                <CheckBox x:Name="ChkSingleInstance" Content="Single Instance mode (reuse active player window for new media files)" IsChecked="True" Margin="0,0,0,8" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                                <CheckBox x:Name="ChkPauseOnMinimize" Content="Pause video playback automatically when player is minimized" IsChecked="False" Margin="0,0,0,8" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                                <CheckBox x:Name="ChkAutoPlay" Content="Automatically begin playback immediately when a file or stream is opened" IsChecked="True" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <GroupBox Header="On-Screen Display &amp; Controls Auto-Hide" Margin="0,0,0,14" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}">
+                            <Grid Margin="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="220"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Fullscreen Controls Auto-Hide:" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,4"/>
+                                <ComboBox Grid.Column="1" x:Name="CmbAutoHide" SelectedIndex="1" Width="180" HorizontalAlignment="Left" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}">
+                                    <ComboBoxItem Content="1.5 Seconds"/>
+                                    <ComboBoxItem Content="2.5 Seconds (Default)"/>
+                                    <ComboBoxItem Content="4.0 Seconds"/>
+                                    <ComboBoxItem Content="Never Auto-Hide"/>
+                                </ComboBox>
+
+                                <TextBlock Grid.Row="1" Text="OSD Notification Duration:" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,10,0,4"/>
+                                <ComboBox Grid.Row="1" Grid.Column="1" x:Name="CmbOsdDuration" SelectedIndex="1" Width="180" HorizontalAlignment="Left" Margin="0,6,0,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}">
+                                    <ComboBoxItem Content="1.5 Seconds"/>
+                                    <ComboBoxItem Content="2.5 Seconds (Default)"/>
+                                    <ComboBoxItem Content="4.0 Seconds"/>
+                                </ComboBox>
+
+                                <TextBlock Grid.Row="2" Text="Default Volume on Startup:" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,10,0,4"/>
+                                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="0,6,0,0">
+                                    <Slider x:Name="SliderDefaultVol" Minimum="0" Maximum="100" Value="80" Width="180" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Value, ElementName=SliderDefaultVol, StringFormat='{}{0:0}%'}" Foreground="{DynamicResource OmniForegroundBrush}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </GroupBox>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- TAB 2: VIDEO & HARDWARE ACCELERATION -->
+            <TabItem Header="  Video &amp; Hardware  ">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <GroupBox Header="Hardware Acceleration Engine" Margin="0,0,0,14" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}">
+                            <StackPanel Margin="10">
+                                <TextBlock Text="Select primary hardware decoder pipeline:" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,0,0,6"/>
+                                <ComboBox x:Name="CmbHwDecoder" SelectedIndex="0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,0,0,10">
+                                    <ComboBoxItem Content="Direct3D 11 Video Acceleration (D3D11VA - Recommended Zero-Copy)"/>
+                                    <ComboBoxItem Content="DirectX Video Acceleration 2 (DXVA2-Copy)"/>
+                                    <ComboBoxItem Content="NVIDIA NVDEC Hardware Accelerated Decoder"/>
+                                    <ComboBoxItem Content="Intel QuickSync Video (QSV)"/>
+                                    <ComboBoxItem Content="Vulkan Video Acceleration Pipeline"/>
+                                    <ComboBoxItem Content="Software Fallback (Dav1d AV1 &amp; libavcodec Multi-Threaded)"/>
+                                </ComboBox>
+                                <TextBlock Text="Zero-copy rendering outputs decoded frames directly into the Direct3D 11 swapchain for zero CPU utilization." FontSize="11" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <GroupBox Header="Scaling &amp; Rendering Matrix" Margin="0,0,0,14" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}">
+                            <Grid Margin="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="180"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Default Aspect Ratio:" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                                <ComboBox Grid.Column="1" x:Name="CmbDefaultAspect" SelectedIndex="0" Width="200" HorizontalAlignment="Left" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}">
+                                    <ComboBoxItem Content="Auto (Stream Native)"/>
+                                    <ComboBoxItem Content="16:9 Widescreen"/>
+                                    <ComboBoxItem Content="4:3 Classic TV"/>
+                                    <ComboBoxItem Content="21:9 Ultrawide Cinema"/>
+                                    <ComboBoxItem Content="Fill Window"/>
+                                </ComboBox>
+
+                                <TextBlock Grid.Row="1" Text="Deinterlacing Filter:" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,10,0,4"/>
+                                <ComboBox Grid.Row="1" Grid.Column="1" x:Name="CmbDeinterlace" SelectedIndex="1" Width="200" HorizontalAlignment="Left" Margin="0,6,0,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}">
+                                    <ComboBoxItem Content="Disabled"/>
+                                    <ComboBoxItem Content="YADIF (High Quality)"/>
+                                    <ComboBoxItem Content="Linear Blend"/>
+                                    <ComboBoxItem Content="Bob (Double Frame Rate)"/>
+                                </ComboBox>
+
+                                <TextBlock Grid.Row="2" Text="Performance Tier:" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,10,0,4"/>
+                                <ComboBox Grid.Row="2" Grid.Column="1" x:Name="CmbPerfTier" SelectedIndex="2" Width="200" HorizontalAlignment="Left" Margin="0,6,0,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}">
+                                    <ComboBoxItem Content="Tier 1: Eco / Battery Saver"/>
+                                    <ComboBoxItem Content="Tier 2: Standard PC"/>
+                                    <ComboBoxItem Content="Tier 3: Balanced (Default)"/>
+                                    <ComboBoxItem Content="Tier 4: High Performance"/>
+                                    <ComboBoxItem Content="Tier 5: Master GPU (FSRCNNX/Anime4K)"/>
+                                </ComboBox>
+                            </Grid>
+                        </GroupBox>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- TAB 3: AUDIO & DSP -->
+            <TabItem Header="  Audio &amp; DSP  ">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <GroupBox Header="Audio Output Pipeline" Margin="0,0,0,14" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}">
+                            <StackPanel Margin="10">
+                                <TextBlock Text="Output Engine &amp; Mode:" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,0,0,6"/>
+                                <ComboBox x:Name="CmbAudioMode" SelectedIndex="0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,0,0,10">
+                                    <ComboBoxItem Content="WASAPI Shared Mode (Standard High-Definition Audio)"/>
+                                    <ComboBoxItem Content="WASAPI Exclusive Mode (Bit-Perfect Audiophile Direct Access)"/>
+                                    <ComboBoxItem Content="DirectSound Multi-Channel Audio"/>
+                                </ComboBox>
+
+                                <CheckBox x:Name="ChkEnableWasapiPassthrough" Content="WASAPI Bitstreaming HDMI Passthrough (Dolby Atmos / TrueHD / DTS:X)" IsChecked="False" Margin="0,0,0,6" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <GroupBox Header="Audio DSP &amp; Enhancement Engines" Margin="0,0,0,14" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}">
+                            <StackPanel Margin="10">
+                                <CheckBox x:Name="ChkEnableDsp" Content="Enable Real-Time 31-Band Audio DSP Engine on playback" IsChecked="True" Margin="0,0,0,8" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                                <CheckBox x:Name="ChkEnableDrc" Content="Enable Night Mode Dynamic Range Compression (DRC) by default" IsChecked="False" Margin="0,0,0,8" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                                <CheckBox x:Name="ChkEnableHaas" Content="Enable Haas 3D Spatial Surround Sound Virtualizer by default" IsChecked="False" Margin="0,0,0,8" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                                <CheckBox x:Name="ChkEnableNormalizer" Content="Enable Voice &amp; Dialogue Speech Normalizer" IsChecked="False" Margin="0,0,0,8" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- TAB 4: SUBTITLES -->
+            <TabItem Header="  Subtitles  ">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <GroupBox Header="Typography &amp; Styling" Margin="0,0,0,14" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}">
+                            <Grid Margin="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="180"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Subtitle Font Family:" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                                <ComboBox Grid.Column="1" x:Name="CmbSubFont" SelectedIndex="0" Width="180" HorizontalAlignment="Left" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}">
+                                    <ComboBoxItem Content="Segoe UI (Default)"/>
+                                    <ComboBoxItem Content="Arial Bold"/>
+                                    <ComboBoxItem Content="Trebuchet MS"/>
+                                    <ComboBoxItem Content="Consolas"/>
+                                </ComboBox>
+
+                                <TextBlock Grid.Row="1" Text="Font Size:" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,10,0,4"/>
+                                <ComboBox Grid.Row="1" Grid.Column="1" x:Name="CmbSubSize" SelectedIndex="2" Width="180" HorizontalAlignment="Left" Margin="0,6,0,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}">
+                                    <ComboBoxItem Content="20 pt (Small)"/>
+                                    <ComboBoxItem Content="24 pt (Medium)"/>
+                                    <ComboBoxItem Content="28 pt (Default)"/>
+                                    <ComboBoxItem Content="34 pt (Large)"/>
+                                    <ComboBoxItem Content="42 pt (Extra Large)"/>
+                                </ComboBox>
+
+                                <TextBlock Grid.Row="2" Text="Subtitle Color:" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,10,0,4"/>
+                                <ComboBox Grid.Row="2" Grid.Column="1" x:Name="CmbSubColor" SelectedIndex="0" Width="180" HorizontalAlignment="Left" Margin="0,6,0,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}">
+                                    <ComboBoxItem Content="Pure White (#FFFFFF)"/>
+                                    <ComboBoxItem Content="Golden Yellow (#FFE066)"/>
+                                    <ComboBoxItem Content="Cyan Teal (#66E0FF)"/>
+                                    <ComboBoxItem Content="Lime Green (#66FF66)"/>
+                                </ComboBox>
+
+                                <TextBlock Grid.Row="3" Text="Drop Shadow Depth:" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,10,0,4"/>
+                                <ComboBox Grid.Row="3" Grid.Column="1" x:Name="CmbSubShadow" SelectedIndex="1" Width="180" HorizontalAlignment="Left" Margin="0,6,0,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}">
+                                    <ComboBoxItem Content="Subtle (Blur 2)"/>
+                                    <ComboBoxItem Content="Cinematic Outline (Blur 5 - Default)"/>
+                                    <ComboBoxItem Content="Heavy Box Shadow"/>
+                                </ComboBox>
+                            </Grid>
+                        </GroupBox>
+
+                        <GroupBox Header="Dual Subtitles &amp; Automation" Margin="0,0,0,14" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}">
+                            <StackPanel Margin="10">
+                                <CheckBox x:Name="ChkAutoOpenSubs" Content="Automatically search and download matching subtitles from OpenSubtitles" IsChecked="True" Margin="0,0,0,8" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                                <CheckBox x:Name="ChkDualSubtitles" Content="Enable Dual Subtitle Mode (Primary at bottom, Secondary translated at top)" IsChecked="False" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- TAB 5: STREAMING & IPTV -->
+            <TabItem Header="  Streaming &amp; IPTV  ">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <GroupBox Header="Network Buffering &amp; Caching" Margin="0,0,0,14" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}">
+                            <Grid Margin="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Stream Buffer Cache:" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                                <ComboBox Grid.Column="1" x:Name="CmbNetworkBuffer" SelectedIndex="1" Width="200" HorizontalAlignment="Left" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}">
+                                    <ComboBoxItem Content="512 KB (Low Latency Live)"/>
+                                    <ComboBoxItem Content="4 MB (Balanced - Default)"/>
+                                    <ComboBoxItem Content="16 MB (High Reliability 4K)"/>
+                                    <ComboBoxItem Content="32 MB (Extreme 8K Unconstrained)"/>
+                                </ComboBox>
+
+                                <TextBlock Grid.Row="1" Text="Connection Timeout:" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,10,0,4"/>
+                                <ComboBox Grid.Row="1" Grid.Column="1" x:Name="CmbTimeout" SelectedIndex="1" Width="200" HorizontalAlignment="Left" Margin="0,6,0,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}">
+                                    <ComboBoxItem Content="5 Seconds"/>
+                                    <ComboBoxItem Content="12 Seconds (Default)"/>
+                                    <ComboBoxItem Content="25 Seconds"/>
+                                </ComboBox>
+
+                                <TextBlock Grid.Row="2" Text="Custom User-Agent:" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,10,0,4"/>
+                                <TextBox Grid.Row="2" Grid.Column="1" x:Name="TxtUserAgent" Text="OmniPlayer/2.5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" Margin="0,6,0,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Padding="8,4"/>
+                            </Grid>
+                        </GroupBox>
+
+                        <GroupBox Header="Live TV Guide (1000+ Channels)" Margin="0,0,0,14" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}">
+                            <StackPanel Margin="10">
+                                <CheckBox x:Name="ChkAutoSyncTv" Content="Automatically sync latest public IPTV channel playlists in the background" IsChecked="True" Margin="0,0,0,8" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                                <TextBlock Text="Includes curated feeds for Indian National, Tamil, Telugu, Malayalam, Kannada, Bengali, Marathi, and World streams." FontSize="11" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- TAB 6: KEYBOARD SHORTCUTS -->
+            <TabItem Header="  Shortcuts &amp; Hotkeys  ">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <TextBlock Text="Master Keyboard &amp; Mouse Shortcuts Matrix" FontWeight="Bold" FontSize="14" Foreground="{DynamicResource OmniAccentBrush}" Margin="0,0,0,10"/>
+                        
+                        <Border Background="{DynamicResource OmniHeaderBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" BorderThickness="1" CornerRadius="4">
+                            <Grid Margin="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="180"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Row="0" Text="Space" FontWeight="Bold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,3"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="Play / Pause toggle" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,3"/>
+
+                                <TextBlock Grid.Row="1" Text="Enter / F11 / F" FontWeight="Bold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,3"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="Toggle true borderless Fullscreen mode" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,3"/>
+
+                                <TextBlock Grid.Row="2" Text="Escape" FontWeight="Bold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,3"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="Exit fullscreen mode" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,3"/>
+
+                                <TextBlock Grid.Row="3" Text="Left / Right" FontWeight="Bold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,3"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="Jump backward / forward 5 seconds" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,3"/>
+
+                                <TextBlock Grid.Row="4" Text="Ctrl + Left / Right" FontWeight="Bold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,3"/>
+                                <TextBlock Grid.Row="4" Grid.Column="1" Text="Jump backward / forward 30 seconds" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,3"/>
+
+                                <TextBlock Grid.Row="5" Text="Shift + Left / Right" FontWeight="Bold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,3"/>
+                                <TextBlock Grid.Row="5" Grid.Column="1" Text="Precise frame nudge / jump 1 second" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,3"/>
+
+                                <TextBlock Grid.Row="6" Text="Up / Down" FontWeight="Bold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,3"/>
+                                <TextBlock Grid.Row="6" Grid.Column="1" Text="Volume Up / Down by 5%" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,3"/>
+
+                                <TextBlock Grid.Row="7" Text="M" FontWeight="Bold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,3"/>
+                                <TextBlock Grid.Row="7" Grid.Column="1" Text="Mute / Unmute audio toggle" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,3"/>
+
+                                <TextBlock Grid.Row="8" Text="0 to 9" FontWeight="Bold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,3"/>
+                                <TextBlock Grid.Row="8" Grid.Column="1" Text="Seek instantly to 0%, 10%, 20% ... 90% of duration" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,3"/>
+
+                                <TextBlock Grid.Row="9" Text="Ctrl + L / L" FontWeight="Bold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,3"/>
+                                <TextBlock Grid.Row="9" Grid.Column="1" Text="Open 1,000+ Live TV &amp; Regional Channels Hub" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,3"/>
+
+                                <TextBlock Grid.Row="10" Text="Ctrl + U" FontWeight="Bold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,3"/>
+                                <TextBlock Grid.Row="10" Grid.Column="1" Text="Open Network Stream / YouTube / Live URL dialog" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,3"/>
+
+                                <TextBlock Grid.Row="11" Text="F3 / E" FontWeight="Bold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,3"/>
+                                <TextBlock Grid.Row="11" Grid.Column="1" Text="Open 31-Band Audio Parametric Equalizer &amp; DSP" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,3"/>
+
+                                <TextBlock Grid.Row="12" Text="F4 / P" FontWeight="Bold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,3"/>
+                                <TextBlock Grid.Row="12" Grid.Column="1" Text="Open Performance Profiles &amp; Neural Shaders Matrix" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,3"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+            <Button Content="Cancel" Click="BtnCancel_Click" Width="90" Height="34" Margin="0,0,10,0"
+                    Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                    BorderBrush="{DynamicResource OmniBorderBrush}"/>
+            <Button Content="Save &amp; Apply Settings" Click="BtnSave_Click" Width="180" Height="34" FontWeight="Bold"
+                    Background="{DynamicResource OmniAccentBrush}" Foreground="#FFFFFF" BorderThickness="0"/>
+        </StackPanel>
+    </Grid>
+</Window>

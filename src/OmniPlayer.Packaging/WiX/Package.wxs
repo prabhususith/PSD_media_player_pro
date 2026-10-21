@@ -1,0 +1,30 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="PSD Media Player Pro Edition"
+           Manufacturer="Prabhu Kannan (PSD Technologies)"
+           Version="2.5.0.0"
+           UpgradeCode="4C5E927A-9372-46BB-9B05-64C4B5AE9E70"
+           Scope="perMachine">
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="INSTALLFOLDER" Name="PSD Media Player Pro">
+        <Directory Id="ThemesFolder" Name="Themes">
+          <Directory Id="PacksFolder" Name="Packs" />
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="MainExecutable" Guid="3A9B2E8C-4D1F-4B7E-89A0-58F2C7D1B994">
+        <File Id="PSDPlayerExe"
+              Source="..\..\..\dist\portable\win-x64\PSDPlayer.exe"
+              KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <Feature Id="MainFeature" Title="PSD Media Player Pro">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+  </Package>
+</Wix>

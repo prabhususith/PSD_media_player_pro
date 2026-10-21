@@ -1,0 +1,93 @@
+<Window x:Class="OmniPlayer.UI.Views.OpenUrlDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Open Network Stream / YouTube / Live TV URL"
+        Height="480" Width="680"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{DynamicResource OmniBackgroundBrush}"
+        Foreground="{DynamicResource OmniForegroundBrush}">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Header -->
+            <RowDefinition Height="Auto"/> <!-- URL Input & Paste -->
+            <RowDefinition Height="Auto"/> <!-- Stream Presets -->
+            <RowDefinition Height="Auto"/> <!-- Buffer & Settings -->
+            <RowDefinition Height="*"/>    <!-- Resolution Status -->
+            <RowDefinition Height="Auto"/> <!-- Action Buttons -->
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock Text="🌐 Network Stream &amp; YouTube Player" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource OmniAccentBrush}"/>
+            <TextBlock Text="Enter any HTTP/HTTPS direct media URL, YouTube link, HLS .m3u8 playlist, or TV feed:"
+                       FontSize="12" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <!-- URL Input & Paste -->
+        <Grid Grid.Row="1" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox x:Name="TxtUrl" Height="36" FontSize="13" Padding="10,8" VerticalContentAlignment="Center"
+                     Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                     BorderBrush="{DynamicResource OmniBorderBrush}"/>
+            
+            <Button Grid.Column="1" Content="📋 Paste" Click="BtnPaste_Click"
+                    Height="36" Padding="12,0" Margin="8,0,0,0"
+                    Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                    BorderBrush="{DynamicResource OmniBorderBrush}"/>
+
+            <Button Grid.Column="2" Content="✕ Clear" Click="BtnClear_Click"
+                    Height="36" Padding="10,0" Margin="6,0,0,0"
+                    Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                    BorderBrush="{DynamicResource OmniBorderBrush}"/>
+        </Grid>
+
+        <!-- Stream Presets -->
+        <GroupBox Grid.Row="2" Header="Featured Live Stream Presets" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Padding="10" Margin="0,0,0,16">
+            <WrapPanel>
+                <Button Content="🚀 NASA TV HD" Click="Preset_Click" Tag="https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8" Margin="0,0,8,8" Height="28" Padding="10,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}"/>
+                <Button Content="🌍 France 24 Live" Click="Preset_Click" Tag="https://static.france24.com/live/F24_EN_LO_HLS/live_tv.m3u8" Margin="0,0,8,8" Height="28" Padding="10,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}"/>
+                <Button Content="📺 Euronews English" Click="Preset_Click" Tag="https://euronews-euronews-world-1-au.samsung.wurl.tv/manifest/playlist.m3u8" Margin="0,0,8,8" Height="28" Padding="10,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}"/>
+                <Button Content="🇮🇳 Aaj Tak HD Live" Click="Preset_Click" Tag="https://feeds.intoday.in/aajtak/api/aajtakhd/master.m3u8" Margin="0,0,8,8" Height="28" Padding="10,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}"/>
+                <Button Content="🏎 Red Bull TV" Click="Preset_Click" Tag="https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8" Margin="0,0,8,8" Height="28" Padding="10,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}"/>
+                <Button Content="🐰 Big Buck Bunny (Direct 4K)" Click="Preset_Click" Tag="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" Margin="0,0,8,8" Height="28" Padding="10,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}"/>
+                <Button Content="🎬 Tears of Steel (1080p)" Click="Preset_Click" Tag="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" Margin="0,0,8,8" Height="28" Padding="10,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}"/>
+            </WrapPanel>
+        </GroupBox>
+
+        <!-- Buffer & Quality Settings -->
+        <Grid Grid.Row="3" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Network Buffer Size:" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,0,12,0"/>
+            <ComboBox Grid.Column="1" x:Name="CmbBuffer" SelectedIndex="1" Width="200" HorizontalAlignment="Left"
+                      Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}">
+                <ComboBoxItem Content="Low Latency (512 KB)"/>
+                <ComboBoxItem Content="Balanced (4 MB Cache)"/>
+                <ComboBoxItem Content="High Reliability / 4K (16 MB Cache)"/>
+            </ComboBox>
+        </Grid>
+
+        <!-- Status & Resolution Info -->
+        <Border Grid.Row="4" Background="{DynamicResource OmniSurfaceBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" BorderThickness="1" CornerRadius="4" Padding="12,8" Margin="0,0,0,16">
+            <TextBlock x:Name="TxtStatus" Text="Ready to stream. Enter a link or select a preset." FontSize="12" Foreground="{DynamicResource OmniMutedForegroundBrush}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+        </Border>
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Cancel" Click="BtnCancel_Click" Width="90" Height="34" Margin="0,0,10,0"
+                    Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                    BorderBrush="{DynamicResource OmniBorderBrush}"/>
+            <Button x:Name="BtnPlay" Content="▶ Play Stream" Click="BtnPlay_Click" Width="130" Height="34" FontWeight="Bold"
+                    Background="{DynamicResource OmniAccentBrush}" Foreground="#FFFFFF" BorderThickness="0"/>
+        </StackPanel>
+    </Grid>
+</Window>

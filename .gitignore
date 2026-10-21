@@ -1,0 +1,43 @@
+# =========================================================================
+# PSD Media Player Pro Edition - Git Ignore Configuration
+# Author: Prabhu Kannan (PSD Technologies)
+# =========================================================================
+
+# Build Outputs & Binaries
+bin/
+obj/
+**/bin/
+**/obj/
+dist/
+build/
+PublishScripts/
+
+# Packaging Intermediates
+*.wixobj
+*.wixpdb
+*.cab
+_UpgradeReport_Files/
+Backup*/
+
+# Visual Studio & IDE Artifacts
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.opendb
+
+# Runtime & Diagnostic Logs
+*.log
+crash.log
+*.tmp
+*.temp
+scratch/
+
+# OS Generated Files
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+.DS_Store

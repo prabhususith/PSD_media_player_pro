@@ -1,0 +1,213 @@
+<Window x:Class="OmniPlayer.UI.Views.LiveTvHubDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PSD Media Player - Global IPTV &amp; Live TV Hub"
+        Height="720" Width="1100"
+        MinHeight="580" MinWidth="850"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource OmniBackgroundBrush}"
+        Foreground="{DynamicResource OmniForegroundBrush}">
+    
+    <Grid>
+        <!-- Main Dialog Content -->
+        <Grid Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- Header & Top Action Buttons -->
+                <RowDefinition Height="Auto"/> <!-- Search & Country Filter -->
+                <RowDefinition Height="Auto"/> <!-- Category Filter Pills -->
+                <RowDefinition Height="*"/>    <!-- Channels Grid / List -->
+                <RowDefinition Height="Auto"/> <!-- Footer Status & Quick Actions -->
+            </Grid.RowDefinitions>
+
+            <!-- Header & Action Bar -->
+            <Grid Grid.Row="0" Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="📡 PSD Media Player - Global IPTV &amp; Live TV Hub" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource OmniAccentBrush}" VerticalAlignment="Center"/>
+                        <!-- Live Count Badge -->
+                        <Border x:Name="BadgeLiveCountContainer" Background="{DynamicResource OmniAccentBrush}" CornerRadius="11" Padding="10,3" Margin="12,0,0,0" VerticalAlignment="Center">
+                            <TextBlock x:Name="TxtLiveCountBadge" Text="⚡ Loading..." FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
+                        </Border>
+                        <!-- Network Online Badge -->
+                        <Border x:Name="BadgeNetworkStatus" Background="#16A34A" CornerRadius="11" Padding="10,3" Margin="8,0,0,0" VerticalAlignment="Center" ToolTip="Active TLS 1.3 High-Speed Streaming Connection">
+                            <TextBlock x:Name="TxtNetworkStatus" Text="🟢 Online (TLS 1.3)" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
+                        </Border>
+                    </StackPanel>
+                    <TextBlock Text="Watch 1,000+ Verified Live TV Channels across Indian National, Regional Stations &amp; Global Feeds" FontSize="12" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <!-- Top Right Action Buttons -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <!-- Add Stream / M3U URL Button -->
+                    <Button x:Name="BtnAddCustomStream" Content="➕ Add Stream / M3U URL" Click="BtnAddCustomStream_Click"
+                            Height="36" Padding="14,0" Margin="0,0,8,0" FontWeight="SemiBold" Cursor="Hand"
+                            Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                            BorderBrush="{DynamicResource OmniBorderBrush}"/>
+
+                    <!-- Import M3U File Button -->
+                    <Button x:Name="BtnImportM3u" Content="📁 Import M3U File" Click="BtnImportM3u_Click"
+                            Height="36" Padding="14,0" Margin="0,0,8,0" FontWeight="SemiBold" Cursor="Hand"
+                            Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                            BorderBrush="{DynamicResource OmniBorderBrush}"/>
+
+                    <!-- Sync Online Feeds Button -->
+                    <Button x:Name="BtnRefreshNetwork" Content="🔄 Sync Online Feeds" Click="BtnRefreshNetwork_Click"
+                            Height="36" Padding="14,0" FontWeight="SemiBold" Cursor="Hand"
+                            Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                            BorderBrush="{DynamicResource OmniBorderBrush}"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Search and Country Filter Row -->
+            <Grid Grid.Row="1" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="180"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Search Box -->
+                <Grid Grid.Column="0" Margin="0,0,10,0">
+                    <TextBox x:Name="TxtSearch" Height="36" FontSize="13" Padding="12,7" VerticalContentAlignment="Center"
+                             Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                             BorderBrush="{DynamicResource OmniBorderBrush}" TextChanged="TxtSearch_TextChanged"/>
+                    <TextBlock x:Name="TxtSearchPlaceholder"
+                               Text="🔍 Search channel name, language (Tamil, Telugu, Hindi...), or category..."
+                               FontSize="12" Foreground="{DynamicResource OmniMutedForegroundBrush}"
+                               IsHitTestVisible="False" VerticalAlignment="Center" Margin="14,0,0,0"/>
+                </Grid>
+
+                <!-- Country Dropdown Filter -->
+                <ComboBox Grid.Column="1" x:Name="CmbCountryFilter" Height="36" VerticalContentAlignment="Center"
+                          Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                          BorderBrush="{DynamicResource OmniBorderBrush}" SelectionChanged="CmbCountryFilter_SelectionChanged"/>
+            </Grid>
+
+            <!-- Category Filter Pills -->
+            <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0,0,0,12">
+                <StackPanel x:Name="PanelCategoryPills" Orientation="Horizontal"/>
+            </ScrollViewer>
+
+            <!-- Channels List -->
+            <Border Grid.Row="3" Background="{DynamicResource OmniSurfaceBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" BorderThickness="1" CornerRadius="6">
+                <ListBox x:Name="LstChannels" Background="Transparent" BorderThickness="0"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         MouseDoubleClick="LstChannels_MouseDoubleClick"
+                         SelectionMode="Single">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="8,4"/>
+                            <Setter Property="Margin" Value="2,2"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{DynamicResource OmniHeaderBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="12,10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/> <!-- Channel Icon -->
+                                        <ColumnDefinition Width="*"/>    <!-- Name & Badges -->
+                                        <ColumnDefinition Width="Auto"/> <!-- Resolution Badge -->
+                                        <ColumnDefinition Width="Auto"/> <!-- Play Button -->
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Channel Icon -->
+                                    <Border Grid.Column="0" Width="44" Height="44" Background="#141414" BorderBrush="{DynamicResource OmniBorderBrush}" BorderThickness="1" CornerRadius="6" Margin="0,0,14,0" VerticalAlignment="Center">
+                                        <TextBlock Text="📺" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <!-- Channel Name & Metadata Tags -->
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                            <!-- Category Pill -->
+                                            <Border Background="{DynamicResource OmniControlBackgroundBrush}" CornerRadius="3" Padding="7,2" Margin="0,0,6,0">
+                                                <TextBlock Text="{Binding Category}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource OmniAccentBrush}"/>
+                                            </Border>
+                                            <!-- Language Tag -->
+                                            <Border Background="#252525" CornerRadius="3" Padding="6,2" Margin="0,0,6,0">
+                                                <TextBlock Text="{Binding Language}" FontSize="11" Foreground="#D0D0D0"/>
+                                            </Border>
+                                            <!-- Country Tag -->
+                                            <Border Background="#1A2D42" CornerRadius="3" Padding="6,2" Margin="0,0,6,0">
+                                                <TextBlock Text="{Binding Country}" FontSize="11" FontWeight="SemiBold" Foreground="#64B5F6"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <!-- Resolution Badge -->
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="14,0">
+                                        <Border Background="#2E7D32" CornerRadius="4" Padding="8,4">
+                                            <TextBlock Text="{Binding Resolution}" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <!-- Play Button -->
+                                    <Button Grid.Column="3" Content="▶ Play" Click="BtnPlayChannel_Click" Tag="{Binding}"
+                                            Height="32" Padding="18,0" FontWeight="Bold" Cursor="Hand"
+                                            Background="{DynamicResource OmniAccentBrush}" Foreground="#FFFFFF" BorderThickness="0"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+
+            <!-- Footer Bar -->
+            <Grid Grid.Row="4" Margin="0,12,0,0">
+                <TextBlock x:Name="TxtFooterStatus" Text="Ready | Channels Online" FontSize="12" Foreground="{DynamicResource OmniMutedForegroundBrush}" VerticalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Close" Click="BtnClose_Click" Width="90" Height="32"
+                            Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                            BorderBrush="{DynamicResource OmniBorderBrush}"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <!-- Modal Overlay for Adding Custom Stream / M3U URL -->
+        <Grid x:Name="OverlayAddStream" Visibility="Collapsed" Background="#B0000000">
+            <Border Width="520" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Background="{DynamicResource OmniBackgroundBrush}" BorderBrush="{DynamicResource OmniAccentBrush}"
+                    BorderThickness="1.5" CornerRadius="8" Padding="24">
+                <StackPanel>
+                    <TextBlock Text="➕ Add Stream / M3U Playlist URL" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,0,0,4"/>
+                    <TextBlock Text="Add an online live stream (M3U8 / HLS) or M3U playlist feed directly to your channel list."
+                               FontSize="12" Foreground="{DynamicResource OmniMutedForegroundBrush}" TextWrapping="Wrap" Margin="0,0,0,16"/>
+
+                    <!-- Stream URL -->
+                    <TextBlock Text="Stream / Playlist URL *" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,0,0,4"/>
+                    <TextBox x:Name="TxtCustomStreamUrl" Height="34" FontSize="13" Padding="8,4" VerticalContentAlignment="Center"
+                             Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                             BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,0,12"/>
+
+                    <!-- Channel Name -->
+                    <TextBlock Text="Channel Name (optional, detected from feed if empty)" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,0,0,4"/>
+                    <TextBox x:Name="TxtCustomChannelName" Height="34" FontSize="13" Padding="8,4" VerticalContentAlignment="Center"
+                             Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                             BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,0,12"/>
+
+                    <!-- Category -->
+                    <TextBlock Text="Category" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,0,0,4"/>
+                    <ComboBox x:Name="CmbCustomCategory" Height="34" VerticalContentAlignment="Center"
+                              Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                              BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,0,20"/>
+
+                    <!-- Action Buttons -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Cancel" Click="BtnCancelAddStream_Click" Width="90" Height="32" Margin="0,0,8,0"
+                                Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                                BorderBrush="{DynamicResource OmniBorderBrush}"/>
+                        <Button Content="➕ Add Stream" Click="BtnConfirmAddStream_Click" Width="120" Height="32" FontWeight="Bold"
+                                Background="{DynamicResource OmniAccentBrush}" Foreground="#FFFFFF" BorderThickness="0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

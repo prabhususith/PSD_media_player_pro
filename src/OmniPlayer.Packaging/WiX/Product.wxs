@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*"
+           Name="Omni Media Player Pro Edition"
+           Language="1033"
+           Version="2.5.0.0"
+           Manufacturer="Omni Media Player Project"
+           UpgradeCode="4C5E927A-9372-46BB-9B05-64C4B5AE9E70">
+
+    <Package InstallerVersion="500"
+             Compressed="yes"
+             InstallScope="perMachine"
+             Platform="x64"
+             Description="High-Performance Hardware-Accelerated Media Player with 110+ Skins" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <!-- Directory Layout -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLFOLDER" Name="Omni Media Player Pro">
+          <Directory Id="ThemesFolder" Name="Themes">
+            <Directory Id="PacksFolder" Name="Packs" />
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="Omni Media Player Pro" />
+      </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop" />
+    </Directory>
+
+    <!-- Core Binary Component -->
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="MainExecutable" Guid="3A9B2E8C-4D1F-4B7E-89A0-58F2C7D1B994" Win64="yes">
+        <File Id="OmniPlayerExe"
+              Source="$(var.SourceDir)\OmniPlayer.exe"
+              KeyPath="yes" />
+
+        <File Id="OmniPlayerCoreDll"
+              Source="$(var.SourceDir)\OmniPlayer.Core.dll" />
+
+        <!-- Registry entries for application registration -->
+        <RegistryKey Root="HKLM" Key="Software\OmniPlayerPro">
+          <RegistryValue Type="string" Name="InstallDir" Value="[INSTALLFOLDER]" />
+          <RegistryValue Type="string" Name="Version" Value="2.5.0.0" />
+        </RegistryKey>
+      </Component>
+    </DirectoryRef>
+
+    <!-- Start Menu & Desktop Shortcuts Component -->
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="7C8B9A0E-3F21-4E8A-901B-47D8A2C3F692">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="Omni Media Player Pro"
+                  Description="High-Fidelity Hardware-Accelerated Video and Audio Player"
+                  Target="[#OmniPlayerExe]"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <Shortcut Id="ApplicationDesktopShortcut"
+                  Directory="DesktopFolder"
+                  Name="Omni Media Player Pro"
+                  Description="High-Fidelity Hardware-Accelerated Video and Audio Player"
+                  Target="[#OmniPlayerExe]"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\OmniPlayerPro" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <!-- Features -->
+    <Feature Id="ProductFeature" Title="Omni Media Player Pro Core" Level="1">
+      <ComponentRef Id="MainExecutable" />
+      <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+  </Product>
+</Wix>

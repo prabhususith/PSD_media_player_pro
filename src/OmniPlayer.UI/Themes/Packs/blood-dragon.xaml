@@ -1,0 +1,24 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <!-- Omni Player Theme Manifest: Blood Dragon (High-Contrast &amp; Gamer Skins) -->
+    <sys:String x:Key="ThemeId">blood-dragon</sys:String>
+    <sys:String x:Key="ThemeName">Blood Dragon</sys:String>
+    <sys:String x:Key="ThemeCategory">High-Contrast &amp; Gamer Skins</sys:String>
+    <CornerRadius x:Key="OmniCornerRadius">6</CornerRadius>
+    <sys:Double x:Key="GlassBlurOpacity">0.85</sys:Double>
+
+    <SolidColorBrush x:Key="OmniBackgroundBrush" Color="#0F0008" />
+    <SolidColorBrush x:Key="OmniSurfaceBrush" Color="#210012" />
+    <SolidColorBrush x:Key="OmniHeaderBrush" Color="#0F0008" />
+    <SolidColorBrush x:Key="OmniBorderBrush" Color="#333333" />
+    <SolidColorBrush x:Key="OmniAccentBrush" Color="#FF0055" />
+    <SolidColorBrush x:Key="OmniAccentHoverBrush" Color="#FF0055" />
+    <SolidColorBrush x:Key="OmniForegroundBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="OmniMutedForegroundBrush" Color="#888888" />
+    <SolidColorBrush x:Key="OmniControlBackgroundBrush" Color="#210012" />
+    <SolidColorBrush x:Key="OmniControlHoverBrush" Color="#3A3A3A" />
+    <SolidColorBrush x:Key="OmniSliderTrackBrush" Color="#444444" />
+    <SolidColorBrush x:Key="OmniSliderThumbBrush" Color="#FF0055" />
+    <SolidColorBrush x:Key="OmniDialogBackgroundBrush" Color="#210012" />
+</ResourceDictionary>

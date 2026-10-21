@@ -1,0 +1,168 @@
+<Window x:Class="OmniPlayer.UI.Views.PerformanceDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Performance Matrix &amp; Video Enhancement Hub"
+        Height="680" Width="920"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource OmniBackgroundBrush}"
+        Foreground="{DynamicResource OmniForegroundBrush}">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Tier Slider Section -->
+        <Border Grid.Row="0" Background="{DynamicResource OmniSurfaceBrush}" CornerRadius="8" Padding="16" Margin="0,0,0,12" BorderBrush="{DynamicResource OmniBorderBrush}" BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="PERFORMANCE &amp; SHADER PROFILE TIER" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource OmniAccentBrush}"/>
+                
+                <Slider x:Name="SliderTier" Grid.Row="1" Minimum="1" Maximum="5" Value="3" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0,12,0,8" ValueChanged="SliderTier_ValueChanged"/>
+                
+                <Grid Grid.Row="2" Margin="4,0,4,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="1: Eco / Battery" FontSize="11" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                    <TextBlock Grid.Column="1" Text="2: Standard PC" FontSize="11" HorizontalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                    <TextBlock Grid.Column="2" Text="3: Balanced (Default)" FontSize="11" HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource OmniAccentBrush}"/>
+                    <TextBlock Grid.Column="3" Text="4: Enthusiast" FontSize="11" HorizontalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                    <TextBlock Grid.Column="4" Text="5: Master GPU" FontSize="11" HorizontalAlignment="Right" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                </Grid>
+
+                <Border Grid.Row="3" Background="{DynamicResource OmniControlBackgroundBrush}" CornerRadius="6" Padding="12,8">
+                    <StackPanel>
+                        <TextBlock x:Name="TxtTierTitle" Text="Tier 3: Balanced (Default)" FontWeight="Bold" FontSize="14" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                        <TextBlock x:Name="TxtTierDesc" Text="Lanczos3 scaling, basic debanding, automatic frame deinterlacing (YADIF), 256MB RAM cache" FontSize="12" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Hardware Decoder & Surface Pipeline -->
+        <Border Grid.Row="1" Background="{DynamicResource OmniSurfaceBrush}" CornerRadius="8" Padding="12" Margin="0,0,0,12" BorderBrush="{DynamicResource OmniBorderBrush}" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="220"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="HW Decoder Backend:" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,0,10,0"/>
+                <ComboBox x:Name="CmbDecoder" Grid.Column="1" SelectionChanged="CmbDecoder_SelectionChanged" Height="28" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"/>
+
+                <TextBlock Grid.Column="2" Text="GPU:" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="20,0,10,0"/>
+                <TextBlock x:Name="TxtGpuStatus" Grid.Column="3" Text="Direct3D 11 / DX12 Zero-Copy Surface" VerticalAlignment="Center" Foreground="{DynamicResource OmniAccentBrush}" TextTrimming="CharacterEllipsis"/>
+            </Grid>
+        </Border>
+
+        <!-- Video Filter Enhancement Hub Sliders & Checkboxes -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: Picture Adjustment Sliders -->
+            <Border Grid.Column="0" Background="{DynamicResource OmniSurfaceBrush}" CornerRadius="8" Padding="14" Margin="0,0,6,0" BorderBrush="{DynamicResource OmniBorderBrush}" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="PICTURE ADJUSTMENTS (REAL-TIME)" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource OmniAccentBrush}" Margin="0,0,0,10"/>
+
+                    <!-- Brightness -->
+                    <Grid Margin="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="45"/></Grid.ColumnDefinitions>
+                        <TextBlock Text="Brightness" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                        <Slider x:Name="SliderBrightness" Grid.Column="1" Minimum="-100" Maximum="100" Value="0" ValueChanged="PictureSlider_ValueChanged"/>
+                        <TextBlock x:Name="TxtBrightnessVal" Grid.Column="2" Text="0" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                    </Grid>
+
+                    <!-- Contrast -->
+                    <Grid Margin="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="45"/></Grid.ColumnDefinitions>
+                        <TextBlock Text="Contrast" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                        <Slider x:Name="SliderContrast" Grid.Column="1" Minimum="-100" Maximum="100" Value="0" ValueChanged="PictureSlider_ValueChanged"/>
+                        <TextBlock x:Name="TxtContrastVal" Grid.Column="2" Text="0" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                    </Grid>
+
+                    <!-- Saturation -->
+                    <Grid Margin="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="45"/></Grid.ColumnDefinitions>
+                        <TextBlock Text="Saturation" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                        <Slider x:Name="SliderSaturation" Grid.Column="1" Minimum="-100" Maximum="100" Value="0" ValueChanged="PictureSlider_ValueChanged"/>
+                        <TextBlock x:Name="TxtSaturationVal" Grid.Column="2" Text="0" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                    </Grid>
+
+                    <!-- Hue -->
+                    <Grid Margin="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="45"/></Grid.ColumnDefinitions>
+                        <TextBlock Text="Hue" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                        <Slider x:Name="SliderHue" Grid.Column="1" Minimum="-180" Maximum="180" Value="0" ValueChanged="PictureSlider_ValueChanged"/>
+                        <TextBlock x:Name="TxtHueVal" Grid.Column="2" Text="0°" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                    </Grid>
+
+                    <!-- Gamma -->
+                    <Grid Margin="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="45"/></Grid.ColumnDefinitions>
+                        <TextBlock Text="Gamma" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                        <Slider x:Name="SliderGamma" Grid.Column="1" Minimum="0.2" Maximum="3.0" Value="1.0" SmallChange="0.05" ValueChanged="PictureSlider_ValueChanged"/>
+                        <TextBlock x:Name="TxtGammaVal" Grid.Column="2" Text="1.00" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                    </Grid>
+
+                    <!-- Sharpness -->
+                    <Grid Margin="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="45"/></Grid.ColumnDefinitions>
+                        <TextBlock Text="Sharpness" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                        <Slider x:Name="SliderSharpness" Grid.Column="1" Minimum="0" Maximum="100" Value="0" ValueChanged="PictureSlider_ValueChanged"/>
+                        <TextBlock x:Name="TxtSharpnessVal" Grid.Column="2" Text="0" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Right: Advanced Post-Processing & HDR -->
+            <Border Grid.Column="1" Background="{DynamicResource OmniSurfaceBrush}" CornerRadius="8" Padding="14" Margin="6,0,0,0" BorderBrush="{DynamicResource OmniBorderBrush}" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="ADVANCED POST-PROCESSING &amp; SHADERS" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource OmniAccentBrush}" Margin="0,0,0,10"/>
+
+                    <CheckBox x:Name="ChkDenoise" Content="Spatial-Temporal De-noising" Checked="FilterOption_Changed" Unchecked="FilterOption_Changed" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,4"/>
+                    <CheckBox x:Name="ChkDering" Content="De-ringing Wavelet Filter" Checked="FilterOption_Changed" Unchecked="FilterOption_Changed" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,4"/>
+                    <CheckBox x:Name="ChkDeblock" Content="In-Loop De-blocking Filter" Checked="FilterOption_Changed" Unchecked="FilterOption_Changed" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,4"/>
+                    <CheckBox x:Name="ChkDeband" Content="High-Precision Deband (Grain Injected)" Checked="FilterOption_Changed" Unchecked="FilterOption_Changed" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,4"/>
+                    <CheckBox x:Name="ChkSmoothMotion" Content="Motion Interpolation (SmoothMotion SVP)" Checked="FilterOption_Changed" Unchecked="FilterOption_Changed" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,4"/>
+
+                    <Separator Margin="0,8" Background="{DynamicResource OmniBorderBrush}"/>
+
+                    <!-- Tone Mapping -->
+                    <TextBlock Text="HDR Tone-Mapping Curve:" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,4,0,2"/>
+                    <ComboBox x:Name="CmbToneMapping" SelectionChanged="CmbToneMapping_SelectionChanged" Height="28" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"/>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <CheckBox x:Name="ChkFsrcnnx" Content="FSRCNNX 8-Pass" Checked="FilterOption_Changed" Unchecked="FilterOption_Changed" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,0,16,0"/>
+                        <CheckBox x:Name="ChkAnime4K" Content="Anime4K GLSL" Checked="FilterOption_Changed" Unchecked="FilterOption_Changed" Foreground="{DynamicResource OmniForegroundBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Bottom Action Bar -->
+        <Border Grid.Row="3" Background="{DynamicResource OmniSurfaceBrush}" CornerRadius="8" Padding="10" Margin="0,12,0,0" BorderBrush="{DynamicResource OmniBorderBrush}" BorderThickness="1">
+            <Grid>
+                <TextBlock Text="Settings apply on-the-fly to Direct3D 11 swapchain with zero pipeline interruption." VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}" FontSize="11"/>
+                <Button Content="Reset Filters to Default" Click="BtnReset_Click" HorizontalAlignment="Right" Width="170" Height="30" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

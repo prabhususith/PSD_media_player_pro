@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <LangVersion>12</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>OmniPlayer.UI</RootNamespace>
+    <AssemblyName>OmniPlayer</AssemblyName>
+    <ApplicationIcon Condition="Exists('Assets\psd-player-icon.ico')">Assets\psd-player-icon.ico</ApplicationIcon>
+    <ApplicationIcon Condition="!Exists('Assets\psd-player-icon.ico') and Exists('Assets\omni-icon.ico')">Assets\omni-icon.ico</ApplicationIcon>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <Version>2.5.0</Version>
+    <FileVersion>2.5.0.0</FileVersion>
+    <Authors>Prabhu Kannan</Authors>
+    <Company>PSD Technologies</Company>
+    <Product>PSD Media Player Pro Edition</Product>
+    <Copyright>Copyright © 2026 Prabhu Kannan (PSD Technologies). All Rights Reserved.</Copyright>
+    <Description>PSD Media Player - Ultra-High-Fidelity Next-Generation Media Player with 110+ Themes, 1000+ Free IPTV Live Channels, Dolby/DTS/Atmos Spatial Audio, and Live Telecast Recording</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\*.png;Assets\*.ico;Assets\*.svg" />
+    <None Update="Assets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OmniPlayer.Core\OmniPlayer.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LibVLCSharp.WPF" Version="3.10.2" />
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.24" />
+  </ItemGroup>
+</Project>

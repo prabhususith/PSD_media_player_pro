@@ -1,0 +1,24 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <!-- Omni Player Theme Manifest: Smoked Quartz (Studio Glass &amp; Acrylic) -->
+    <sys:String x:Key="ThemeId">smoked-quartz</sys:String>
+    <sys:String x:Key="ThemeName">Smoked Quartz</sys:String>
+    <sys:String x:Key="ThemeCategory">Studio Glass &amp; Acrylic</sys:String>
+    <CornerRadius x:Key="OmniCornerRadius">6</CornerRadius>
+    <sys:Double x:Key="GlassBlurOpacity">0.85</sys:Double>
+
+    <SolidColorBrush x:Key="OmniBackgroundBrush" Color="#1B1715" />
+    <SolidColorBrush x:Key="OmniSurfaceBrush" Color="#28221F" />
+    <SolidColorBrush x:Key="OmniHeaderBrush" Color="#1B1715" />
+    <SolidColorBrush x:Key="OmniBorderBrush" Color="#333333" />
+    <SolidColorBrush x:Key="OmniAccentBrush" Color="#D97706" />
+    <SolidColorBrush x:Key="OmniAccentHoverBrush" Color="#D97706" />
+    <SolidColorBrush x:Key="OmniForegroundBrush" Color="#FEF3C7" />
+    <SolidColorBrush x:Key="OmniMutedForegroundBrush" Color="#888888" />
+    <SolidColorBrush x:Key="OmniControlBackgroundBrush" Color="#28221F" />
+    <SolidColorBrush x:Key="OmniControlHoverBrush" Color="#3A3A3A" />
+    <SolidColorBrush x:Key="OmniSliderTrackBrush" Color="#444444" />
+    <SolidColorBrush x:Key="OmniSliderThumbBrush" Color="#D97706" />
+    <SolidColorBrush x:Key="OmniDialogBackgroundBrush" Color="#28221F" />
+</ResourceDictionary>

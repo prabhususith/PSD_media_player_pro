@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="60%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </radialGradient>
+
+    <!-- Neon Cyan-Blue Accent Gradient -->
+    <linearGradient id="neonPlay" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="45%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#A855F7"/>
+    </linearGradient>
+
+    <!-- Glowing Rim Gradient -->
+    <linearGradient id="rimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#6366F1" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#EC4899" stop-opacity="0.7"/>
+    </linearGradient>
+
+    <!-- Audio Waves Gradient -->
+    <linearGradient id="waveGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="16" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Rounded Container with Subtle Glass Border -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="url(#bgGrad)"/>
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="none" stroke="url(#rimGrad)" stroke-width="4"/>
+
+  <!-- Subtle Concentric Sound Rings -->
+  <circle cx="256" cy="216" r="160" fill="none" stroke="#38BDF8" stroke-width="1.5" stroke-opacity="0.12" stroke-dasharray="6 8"/>
+  <circle cx="256" cy="216" r="190" fill="none" stroke="#818CF8" stroke-width="1" stroke-opacity="0.08"/>
+
+  <!-- Glowing Aura behind Play Symbol -->
+  <polygon points="200,126 366,216 200,306" fill="url(#neonPlay)" opacity="0.35" filter="url(#softGlow)"/>
+
+  <!-- High-Tech Geometric Play Arrow -->
+  <polygon points="204,136 352,216 204,296" fill="url(#neonPlay)" filter="url(#neonGlow)"/>
+
+  <!-- Inner Play Polygon Highlight Accent -->
+  <polygon points="208,144 320,204 208,220" fill="#FFFFFF" opacity="0.25"/>
+
+  <!-- Dynamic Equalizer Spectrum Bars Inside Left Crest -->
+  <rect x="156" y="186" width="10" height="60" rx="5" fill="url(#waveGrad)" opacity="0.9"/>
+  <rect x="134" y="166" width="10" height="100" rx="5" fill="url(#waveGrad)" opacity="0.75"/>
+  <rect x="112" y="196" width="10" height="40" rx="5" fill="url(#waveGrad)" opacity="0.5"/>
+
+  <!-- Right Side Satellite Spectrum Bars -->
+  <rect x="376" y="186" width="10" height="60" rx="5" fill="#A855F7" opacity="0.8"/>
+  <rect x="398" y="172" width="10" height="88" rx="5" fill="#A855F7" opacity="0.6"/>
+
+  <!-- Brand Typography: PSD -->
+  <g transform="translate(256, 382)" text-anchor="middle">
+    <!-- "PSD" Main Title -->
+    <text font-family="'Segoe UI', 'Montserrat', 'Inter', -apple-system, sans-serif"
+          font-size="52" font-weight="900" letter-spacing="8" fill="#F8FAFC">
+      PSD
+    </text>
+    <text font-family="'Segoe UI', 'Montserrat', 'Inter', -apple-system, sans-serif"
+          font-size="52" font-weight="900" letter-spacing="8" fill="#38BDF8" opacity="0.3" filter="url(#neonGlow)">
+      PSD
+    </text>
+  </g>
+
+  <!-- Subtitle: MEDIA PLAYER PRO -->
+  <g transform="translate(256, 426)" text-anchor="middle">
+    <text font-family="'Segoe UI', 'Inter', sans-serif"
+          font-size="16" font-weight="700" letter-spacing="6" fill="#38BDF8">
+      MEDIA PLAYER PRO
+    </text>
+  </g>
+
+  <!-- Author Badge: BY PRABHU KANNAN -->
+  <g transform="translate(256, 458)" text-anchor="middle">
+    <text font-family="'Segoe UI', 'Inter', sans-serif"
+          font-size="10" font-weight="600" letter-spacing="3" fill="#94A3B8">
+      ENGINEERED BY PRABHU KANNAN
+    </text>
+  </g>
+</svg>
