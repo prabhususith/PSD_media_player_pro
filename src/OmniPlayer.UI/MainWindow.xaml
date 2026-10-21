@@ -91,6 +91,9 @@
                     </MenuItem>
                     <MenuItem Header="Cycle View Mode" Click="MenuCycleViewMode_Click" InputGestureText="V / F8"/>
                     <Separator/>
+                    <MenuItem Header="📷 Camera Studio (Live AR &amp; Capture)..." Click="MenuCameraStudio_Click" InputGestureText="W / Ctrl+W"/>
+                    <MenuItem Header="📁 Media Library Dashboard &amp; Auto-Scanner..." Click="MenuMediaLibrary_Click" InputGestureText="B / Ctrl+B"/>
+                    <Separator/>
                     <MenuItem Header="_Fullscreen" Click="BtnFullscreen_Click" InputGestureText="F11 / Enter"/>
                     <MenuItem Header="🎛 Quick Control Panel..." Click="MenuControlPanel_Click" InputGestureText="F7 / Ctrl+P"/>
                     <MenuItem Header="Audio Equalizer (31-Band)..." Click="MenuEqualizer_Click" InputGestureText="F3"/>
@@ -125,6 +128,8 @@
                 <!-- Tools Menu (Comprehensive Swarm Delta Specification) -->
                 <MenuItem Header="_Tools">
                     <MenuItem Header="📡 Live TV Hub (1000+ Channels)..." Click="MenuLiveTv_Click" InputGestureText="Ctrl+L"/>
+                    <MenuItem Header="📁 Media Library Dashboard &amp; Auto-Scanner..." Click="MenuMediaLibrary_Click" InputGestureText="B / Ctrl+B"/>
+                    <MenuItem Header="📷 Laptop &amp; USB Camera Studio &amp; AR Effects..." Click="MenuCameraStudio_Click" InputGestureText="W / Ctrl+W"/>
                     <MenuItem Header="🌐 Network Stream &amp; YouTube..." Click="MenuOpenUrl_Click" InputGestureText="Ctrl+U"/>
                     <MenuItem Header="📥 Online Media &amp; Video Downloader..." Click="MenuMediaDownloader_Click" InputGestureText="Ctrl+D"/>
                     <Separator/>
@@ -198,15 +203,20 @@
                         <MenuItem Header="Cycle Aspect Ratio" Click="MenuCycleAspect_Click" InputGestureText="A"/>
                     </MenuItem>
                     <MenuItem Header="⏩ Playback Speed">
-                        <MenuItem Header="0.25x Ultra Slow" Click="MenuSpeedPreset_Click" Tag="0.25"/>
+                        <MenuItem Header="0.10x Ultra Slow Motion" Click="MenuSpeedPreset_Click" Tag="0.1"/>
+                        <MenuItem Header="0.25x Quarter Speed Slow" Click="MenuSpeedPreset_Click" Tag="0.25"/>
                         <MenuItem Header="0.5x Half Speed" Click="MenuSpeedPreset_Click" Tag="0.5"/>
                         <MenuItem Header="0.75x Slower" Click="MenuSpeedPreset_Click" Tag="0.75"/>
                         <MenuItem Header="1.0x Normal Speed" Click="MenuSpeedPreset_Click" Tag="1.0" IsChecked="True"/>
                         <MenuItem Header="1.25x Faster" Click="MenuSpeedPreset_Click" Tag="1.25"/>
                         <MenuItem Header="1.5x Fast" Click="MenuSpeedPreset_Click" Tag="1.5"/>
                         <MenuItem Header="2.0x Double Speed" Click="MenuSpeedPreset_Click" Tag="2.0"/>
+                        <MenuItem Header="3.0x Triple Speed" Click="MenuSpeedPreset_Click" Tag="3.0"/>
+                        <MenuItem Header="4.0x Quad Speed" Click="MenuSpeedPreset_Click" Tag="4.0"/>
                     </MenuItem>
                     <Separator/>
+                    <MenuItem Header="📁 Media Library &amp; Device Scanner..." Click="MenuMediaLibrary_Click" InputGestureText="B / Ctrl+B"/>
+                    <MenuItem Header="📷 Laptop Camera Studio &amp; Live AR..." Click="MenuCameraStudio_Click" InputGestureText="W / Ctrl+W"/>
                     <MenuItem Header="🔴 Toggle Live Telecast Recording" Click="BtnRecord_Click" InputGestureText="R"/>
                     <MenuItem Header="📸 Capture Frame Snapshot" Click="BtnQuickCapture_Click" InputGestureText="S / Ctrl+G"/>
                     <MenuItem Header="⏭ Step 1 Frame Forward" Click="BtnStepForward_Click" InputGestureText="."/>
@@ -343,7 +353,7 @@
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="16" ShadowDepth="4" Color="#000000" Opacity="0.85"/>
                 </Border.Effect>
-                <StackPanel Width="680">
+                <StackPanel Width="860">
                     <!-- Modern Scrub Slider & Time -->
                     <Grid Margin="0,0,0,6">
                         <Grid.ColumnDefinitions>
@@ -352,6 +362,22 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock x:Name="TxtModernTimeElapsed" Text="00:00:00" FontSize="11" Foreground="{DynamicResource OmniMutedForegroundBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+
+                        <!-- Floating Modern Seek Time Preview Popup -->
+                        <Popup x:Name="PopupModernSeekPreview" Placement="Top" PlacementTarget="{Binding ElementName=SliderModernTimeline}"
+                               AllowsTransparency="True" StaysOpen="False" IsHitTestVisible="False">
+                            <Border Background="#F0181818" BorderBrush="{DynamicResource OmniAccentBrush}" BorderThickness="1.5"
+                                    CornerRadius="6" Padding="10,5">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="12" ShadowDepth="3" Color="#000000" Opacity="0.85"/>
+                                </Border.Effect>
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock x:Name="TxtModernSeekPreviewTime" Text="00:00:00" FontWeight="Bold" FontSize="13" Foreground="#FFFFFF" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="TxtModernSeekPreviewPercent" Text="0.0%" FontSize="10" Foreground="{DynamicResource OmniAccentBrush}" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </Popup>
+
                         <Slider x:Name="SliderModernTimeline" Grid.Column="1"
                                 Minimum="0" Maximum="1000" Value="0"
                                 SmallChange="1" LargeChange="10"
@@ -359,6 +385,8 @@
                                 PreviewMouseDown="SliderTimeline_PreviewMouseDown"
                                 PreviewMouseUp="SliderTimeline_PreviewMouseUp"
                                 PreviewMouseMove="SliderTimeline_PreviewMouseMove"
+                                MouseEnter="SliderTimeline_MouseEnter"
+                                MouseLeave="SliderTimeline_MouseLeave"
                                 ValueChanged="SliderTimeline_ValueChanged"/>
                         <TextBlock x:Name="TxtModernTimeTotal" Grid.Column="2" Text="00:00:00" FontSize="11" Foreground="{DynamicResource OmniMutedForegroundBrush}" VerticalAlignment="Center" Margin="8,0,0,0"/>
                     </Grid>
@@ -374,18 +402,21 @@
                         <!-- Left buttons -->
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <Button x:Name="BtnModernPlayPause" Content="▶ Play" Click="BtnPlayPause_Click" Width="72" Height="30" FontWeight="Bold" Background="{DynamicResource OmniAccentBrush}" Foreground="#FFFFFF" BorderThickness="0" Margin="0,0,4,0"/>
-                            <Button Content="■ Stop" Click="BtnStop_Click" Width="60" Height="30" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0"/>
-                            <Button Content="⏮" Click="BtnPrev_Click" Width="32" Height="30" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,3,0"/>
-                            <Button Content="⏭" Click="BtnNext_Click" Width="32" Height="30" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}"/>
+                            <Button Content="■ Stop" Click="BtnStop_Click" Width="56" Height="30" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0"/>
+                            <Button Content="⏮" Click="BtnPrev_Click" Width="30" Height="30" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,3,0"/>
+                            <Button Content="⏭" Click="BtnNext_Click" Width="30" Height="30" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}"/>
                         </StackPanel>
 
                         <!-- Center Quick Badges -->
                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Button Content="📡 Live TV" Click="MenuLiveTv_Click" Height="28" Padding="8,0" FontWeight="Bold" Background="{DynamicResource OmniAccentBrush}" Foreground="#FFFFFF" BorderThickness="0" Margin="0,0,5,0"/>
-                            <Button Content="🌐 URL" Click="MenuOpenUrl_Click" Height="28" Padding="7,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,5,0"/>
-                            <Button Content="🎚 EQ" Click="MenuEqualizer_Click" Height="28" Padding="7,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,5,0"/>
-                            <Button Content="🎛 Controls" Click="MenuControlPanel_Click" Height="28" Padding="7,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,5,0"/>
-                            <Button x:Name="BtnModernViewMode" Content="🪟 Modern" Click="MenuCycleViewMode_Click" Height="28" Padding="7,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" ToolTip="Cycle View Mode (V / F8)"/>
+                            <Button Content="📡 Live TV" Click="MenuLiveTv_Click" Height="28" Padding="6,0" FontWeight="Bold" Background="{DynamicResource OmniAccentBrush}" Foreground="#FFFFFF" BorderThickness="0" Margin="0,0,4,0"/>
+                            <Button Content="📁 Library" Click="MenuMediaLibrary_Click" Height="28" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0" ToolTip="Media Library &amp; Auto-Scanner (B)"/>
+                            <Button Content="📷 Camera" Click="MenuCameraStudio_Click" Height="28" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0" ToolTip="Camera Studio &amp; AR FX (W)"/>
+                            <Button Content="🌐 URL" Click="MenuOpenUrl_Click" Height="28" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0"/>
+                            <Button Content="🐌 Slow Mo" Click="BtnSlowMo_Click" Height="28" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0" ToolTip="YouTube-Style Slow Motion"/>
+                            <Button Content="🎚 EQ" Click="MenuEqualizer_Click" Height="28" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0"/>
+                            <Button Content="🎛 Controls" Click="MenuControlPanel_Click" Height="28" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0"/>
+                            <Button x:Name="BtnModernViewMode" Content="🪟 Modern" Click="MenuCycleViewMode_Click" Height="28" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" ToolTip="Cycle View Mode (V / F8)"/>
                         </StackPanel>
 
                         <!-- Right buttons -->
@@ -428,6 +459,21 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
+                <!-- Floating Seek Time Preview Popup (YouTube Style) -->
+                <Popup x:Name="PopupSeekPreview" Placement="Top" PlacementTarget="{Binding ElementName=SliderTimeline}"
+                       AllowsTransparency="True" StaysOpen="False" IsHitTestVisible="False">
+                    <Border Background="#F0181818" BorderBrush="{DynamicResource OmniAccentBrush}" BorderThickness="1.5"
+                            CornerRadius="6" Padding="10,5">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="12" ShadowDepth="3" Color="#000000" Opacity="0.85"/>
+                        </Border.Effect>
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock x:Name="TxtSeekPreviewTime" Text="00:00:00" FontWeight="Bold" FontSize="13" Foreground="#FFFFFF" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="TxtSeekPreviewPercent" Text="0.0%" FontSize="10" Foreground="{DynamicResource OmniAccentBrush}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
                 <!-- Slider with IsMoveToPointEnabled for smooth direct seek on click -->
                 <Slider x:Name="SliderTimeline"
                         Minimum="0" Maximum="1000" Value="0"
@@ -436,6 +482,8 @@
                         PreviewMouseDown="SliderTimeline_PreviewMouseDown"
                         PreviewMouseUp="SliderTimeline_PreviewMouseUp"
                         PreviewMouseMove="SliderTimeline_PreviewMouseMove"
+                        MouseEnter="SliderTimeline_MouseEnter"
+                        MouseLeave="SliderTimeline_MouseLeave"
                         ValueChanged="SliderTimeline_ValueChanged"/>
 
                 <Grid Grid.Row="1" Margin="2,4,2,0">
@@ -466,17 +514,20 @@
                     <Button x:Name="BtnNext" Content="⏭" Click="BtnNext_Click" Width="34" Height="34" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" ToolTip="Next Media / Chapter"/>
                 </StackPanel>
 
-                <!-- Center: Quick Action Badges (Live TV, URL, Speed, Record, View Mode, EQ, Controls, Snap, Settings) -->
+                <!-- Center: Quick Action Badges (Live TV, Library, Camera, URL, Speed, SlowMo, Record, View Mode, EQ, Controls, Snap, Settings) -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button x:Name="BtnLiveTv" Content="📡 Live TV" Click="MenuLiveTv_Click" Height="30" Padding="10,0" FontWeight="Bold" Background="{DynamicResource OmniAccentBrush}" Foreground="#FFFFFF" BorderThickness="0" Margin="0,0,5,0"/>
-                    <Button x:Name="BtnStream" Content="🌐 URL" Click="MenuOpenUrl_Click" Height="30" Padding="7,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,5,0"/>
-                    <Button x:Name="BtnSpeed" Content="⚡ 1.0x" Click="BtnSpeed_Click" Height="30" Padding="7,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,5,0" ToolTip="Playback Speed: Click to cycle presets, right-click for list"/>
-                    <Button x:Name="BtnRecord" Content="🔴 Rec" Click="BtnRecord_Click" Height="30" Padding="7,0" FontWeight="SemiBold" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="#EF5350" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,5,0" ToolTip="Record Live Stream Telecast (R)"/>
-                    <Button x:Name="BtnViewMode" Content="🪟 View" Click="MenuCycleViewMode_Click" Height="30" Padding="7,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,5,0" ToolTip="Switch View Mode (V / F8)"/>
-                    <Button x:Name="BtnQuickEq" Content="🎚 EQ" Click="MenuEqualizer_Click" Height="30" Padding="7,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,5,0"/>
-                    <Button x:Name="BtnQuickControlPanel" Content="🎛 Controls" Click="MenuControlPanel_Click" Height="30" Padding="7,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,5,0" ToolTip="Quick Control Panel (F7 / Ctrl+P)"/>
-                    <Button x:Name="BtnQuickCapture" Content="📷 Snap" Click="BtnQuickCapture_Click" Height="30" Padding="7,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,5,0" ToolTip="Capture Video Frame Snapshot (S)"/>
-                    <Button x:Name="BtnSettings" Content="⚙" Click="MenuSettings_Click" Height="30" Width="30" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" ToolTip="Settings &amp; Options (Ctrl+,)"/>
+                    <Button x:Name="BtnLiveTv" Content="📡 Live TV" Click="MenuLiveTv_Click" Height="30" Padding="8,0" FontWeight="Bold" Background="{DynamicResource OmniAccentBrush}" Foreground="#FFFFFF" BorderThickness="0" Margin="0,0,4,0"/>
+                    <Button x:Name="BtnMediaLibrary" Content="📁 Library" Click="MenuMediaLibrary_Click" Height="30" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0" ToolTip="Media Library &amp; Device Auto-Scan Dashboard (B)"/>
+                    <Button x:Name="BtnCamera" Content="📷 Camera" Click="MenuCameraStudio_Click" Height="30" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0" ToolTip="Laptop &amp; USB Camera Studio with Live AR Effects (W)"/>
+                    <Button x:Name="BtnStream" Content="🌐 URL" Click="MenuOpenUrl_Click" Height="30" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0"/>
+                    <Button x:Name="BtnSpeed" Content="⚡ 1.0x" Click="BtnSpeed_Click" Height="30" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0" ToolTip="Playback Speed: Click to cycle presets, right-click for list ([ / ])"/>
+                    <Button x:Name="BtnSlowMo" Content="🐌 Slow Mo" Click="BtnSlowMo_Click" Height="30" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0" ToolTip="YouTube-Style Slow Motion (0.1x, 0.25x, 0.5x, 0.75x)"/>
+                    <Button x:Name="BtnRecord" Content="🔴 Rec" Click="BtnRecord_Click" Height="30" Padding="6,0" FontWeight="SemiBold" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="#EF5350" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0" ToolTip="Record Live Stream Telecast (R)"/>
+                    <Button x:Name="BtnViewMode" Content="🪟 View" Click="MenuCycleViewMode_Click" Height="30" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0" ToolTip="Switch View Mode (V / F8)"/>
+                    <Button x:Name="BtnQuickEq" Content="🎚 EQ" Click="MenuEqualizer_Click" Height="30" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0"/>
+                    <Button x:Name="BtnQuickControlPanel" Content="🎛 Controls" Click="MenuControlPanel_Click" Height="30" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0" ToolTip="Quick Control Panel (F7 / Ctrl+P)"/>
+                    <Button x:Name="BtnQuickCapture" Content="📷 Snap" Click="BtnQuickCapture_Click" Height="30" Padding="6,0" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" Margin="0,0,4,0" ToolTip="Capture Video Frame Snapshot (S)"/>
+                    <Button x:Name="BtnSettings" Content="⚙" Click="MenuSettings_Click" Height="30" Width="30" Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}" BorderBrush="{DynamicResource OmniBorderBrush}" ToolTip="Settings &amp; Options (Ctrl+, / P)"/>
                 </StackPanel>
 
                 <!-- Right: Volume Slider & Fullscreen -->

@@ -123,6 +123,9 @@ namespace OmniPlayer.Core.Engine
                     "--live-caching=2000",         // 2s live broadcast caching
                     "--file-caching=1000",         // 1s local file caching
                     "--audio-resampler=soxr",      // High fidelity audio resampler
+                    "--audio-time-stretch",        // YouTube-style audio pitch preservation during slow motion & speedup
+                    "--http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    "--http-referrer=https://www.google.com/",
                     "--no-sub-autodetect-fuzzy",   // Strict subtitle detection
                     "--drop-late-frames",          // Keep audio/video in perfect sync
                     "--skip-frames"                // Skip corrupt frames gracefully
@@ -233,7 +236,7 @@ namespace OmniPlayer.Core.Engine
 
         public void SetRate(float rate)
         {
-            _mediaPlayer?.SetRate(Math.Clamp(rate, 0.2f, 4.0f));
+            _mediaPlayer?.SetRate(Math.Clamp(rate, 0.05f, 4.0f));
         }
 
         public void SetAspectRatio(string aspect)

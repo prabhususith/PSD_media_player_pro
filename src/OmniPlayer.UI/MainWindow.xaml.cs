@@ -65,9 +65,9 @@ namespace OmniPlayer.UI
         private POINT _lastScreenCursorPos = new POINT { X = -1, Y = -1 };
         private DateTime _lastMouseMoveTime = DateTime.UtcNow;
 
-        // Playback speed presets (YouTube standard)
+        // Playback speed presets (YouTube standard + ultra slow motion)
         private double _currentSpeed = 1.0;
-        private static readonly double[] _speedPresets = new[] { 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0 };
+        private static readonly double[] _speedPresets = new[] { 0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0 };
 
         [StructLayout(LayoutKind.Sequential)]
         public struct POINT
@@ -160,6 +160,15 @@ namespace OmniPlayer.UI
             LiveStreamRecorder.Instance.RecordingProgress += OnRecordingProgress;
             LiveStreamRecorder.Instance.RecordingFinished += OnRecordingFinished;
             LiveStreamRecorder.Instance.RecordingError += OnRecordingError;
+
+            // Wire Media Library dashboard 1-click playback dispatcher
+            MediaLibraryDashboardDialog.MediaPlayRequested += (filePath) =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    PlayMedia(filePath, Path.GetFileName(filePath));
+                });
+            };
 
             PopulateThemesMenu();
             ApplyInitialTheme();
@@ -501,6 +510,8 @@ namespace OmniPlayer.UI
         }
 
         // ================= Playback Engine Unified Dispatcher =================
+        public void PlayMedia(string sourceUri) => PlayMedia(sourceUri, Path.GetFileName(sourceUri));
+
         public void PlayMedia(string sourceUri, string title)
         {
             try
@@ -865,6 +876,16 @@ namespace OmniPlayer.UI
                         MenuMediaDownloader_Click(sender, e);
                     break;
 
+                // Laptop & USB Camera Studio with Live AR Effects (W / Ctrl+W)
+                case Key.W:
+                    ToolsMenuController.Instance.ShowCameraStudioDialog(this);
+                    break;
+
+                // Media Library & Device Auto-Scan Dashboard (B / Ctrl+B)
+                case Key.B:
+                    ToolsMenuController.Instance.ShowMediaLibraryDashboardDialog(this);
+                    break;
+
                 case Key.S:
                     if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
                         BtnStop_Click(sender, e);
@@ -936,6 +957,7 @@ namespace OmniPlayer.UI
                     AdjustSpeed(0.1);
                     break;
 
+                case Key.OemPipe:
                 case Key.Back:
                     SetSpeed(1.0);
                     break;
@@ -1002,7 +1024,7 @@ namespace OmniPlayer.UI
 
         private void SetSpeed(double speed)
         {
-            _currentSpeed = Math.Clamp(speed, 0.2, 4.0);
+            _currentSpeed = Math.Clamp(speed, 0.05, 4.0);
             if (_isVlcActive)
             {
                 VlcEngineController.Instance.SetRate((float)_currentSpeed);
@@ -1019,16 +1041,25 @@ namespace OmniPlayer.UI
         private void AdjustSpeed(double delta)
         {
             double cur = _isVlcActive ? (VlcEngineController.Instance.GetMediaPlayer()?.Rate ?? 1.0f) : PlayerMediaElement.SpeedRatio;
-            double newSpeed = Math.Clamp(Math.Round(cur + delta, 2), 0.2, 4.0);
+            double newSpeed = Math.Clamp(Math.Round(cur + delta, 2), 0.05, 4.0);
             SetSpeed(newSpeed);
         }
 
         public void BtnSpeed_Click(object sender, RoutedEventArgs e)
         {
             int idx = Array.FindIndex(_speedPresets, s => Math.Abs(s - _currentSpeed) < 0.01);
-            if (idx < 0) idx = 3; // 1.0x
+            if (idx < 0) idx = 4; // 1.0x
             int nextIdx = (idx + 1) % _speedPresets.Length;
             SetSpeed(_speedPresets[nextIdx]);
+        }
+
+        public void BtnSlowMo_Click(object sender, RoutedEventArgs e)
+        {
+            // YouTube-style slow motion cycler: 0.5x -> 0.25x -> 0.1x -> 0.75x -> 1.0x
+            double[] slowMoLevels = new[] { 0.5, 0.25, 0.1, 0.75, 1.0 };
+            int idx = Array.FindIndex(slowMoLevels, s => Math.Abs(s - _currentSpeed) < 0.01);
+            int nextIdx = (idx + 1) % slowMoLevels.Length;
+            SetSpeed(slowMoLevels[nextIdx]);
         }
 
 
@@ -1126,9 +1157,26 @@ namespace OmniPlayer.UI
             });
         }
 
-        // ================= Mouse Gestures (Wheel Volume & Fullscreen Auto-Hide) =================
+        // ================= Mouse & Touchpad Gestures (Wheel Volume, Horizontal Seek & Auto-Hide) =================
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) || Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+            {
+                // Touchpad horizontal scroll or Shift+wheel: timeline jump
+                if (e.Delta > 0)
+                {
+                    SeekRelative(5);
+                    ShowOsd("⏩ Scrub +5s");
+                }
+                else if (e.Delta < 0)
+                {
+                    SeekRelative(-5);
+                    ShowOsd("⏪ Scrub -5s");
+                }
+                e.Handled = true;
+                return;
+            }
+
             if (e.Delta > 0)
             {
                 MenuVolUp_Click(sender, e);
@@ -1371,6 +1419,52 @@ namespace OmniPlayer.UI
         }
 
         // ================= Smooth Seeking & Timeline Scrubbing (YouTube Standard) =================
+        private void SliderTimeline_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (_totalDuration.TotalSeconds > 0)
+            {
+                UpdateSeekHoverPreview(sender as Slider ?? SliderTimeline, e);
+            }
+        }
+
+        private void SliderTimeline_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (PopupSeekPreview != null) PopupSeekPreview.IsOpen = false;
+            if (PopupModernSeekPreview != null) PopupModernSeekPreview.IsOpen = false;
+        }
+
+        private void UpdateSeekHoverPreview(Slider slider, MouseEventArgs e)
+        {
+            if (slider == null || slider.ActualWidth <= 0 || _totalDuration.TotalSeconds <= 0)
+            {
+                if (PopupSeekPreview != null) PopupSeekPreview.IsOpen = false;
+                if (PopupModernSeekPreview != null) PopupModernSeekPreview.IsOpen = false;
+                return;
+            }
+
+            var pt = e.GetPosition(slider);
+            double fraction = Math.Clamp(pt.X / slider.ActualWidth, 0.0, 1.0);
+            double targetSecs = fraction * _totalDuration.TotalSeconds;
+            string timeStr = TimeSpan.FromSeconds(targetSecs).ToString(@"hh\:mm\:ss");
+            string pctStr = $"{(fraction * 100.0):0.0}%";
+
+            bool isModern = slider == SliderModernTimeline;
+            var popup = isModern ? PopupModernSeekPreview : PopupSeekPreview;
+            var timeTxt = isModern ? TxtModernSeekPreviewTime : TxtSeekPreviewTime;
+            var pctTxt = isModern ? TxtModernSeekPreviewPercent : TxtSeekPreviewPercent;
+
+            if (timeTxt != null) timeTxt.Text = timeStr;
+            if (pctTxt != null) pctTxt.Text = pctStr;
+
+            if (popup != null)
+            {
+                popup.PlacementTarget = slider;
+                popup.HorizontalOffset = pt.X - 42;
+                popup.VerticalOffset = -10;
+                if (!popup.IsOpen) popup.IsOpen = true;
+            }
+        }
+
         private void SliderTimeline_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             var slider = sender as Slider ?? SliderTimeline;
@@ -1388,17 +1482,22 @@ namespace OmniPlayer.UI
         private void SliderTimeline_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             var slider = sender as Slider ?? SliderTimeline;
-            if (slider != null && e.LeftButton == MouseButtonState.Pressed && _isDraggingSlider && slider.ActualWidth > 0 && _totalDuration.TotalSeconds > 0)
+            if (slider != null && slider.ActualWidth > 0 && _totalDuration.TotalSeconds > 0)
             {
-                var pt = e.GetPosition(slider);
-                double fraction = Math.Clamp(pt.X / slider.ActualWidth, 0.0, 1.0);
-                double targetVal = fraction * 1000.0;
-                slider.Value = targetVal;
-                double targetSecs = fraction * _totalDuration.TotalSeconds;
-                string t = $"{TimeSpan.FromSeconds(targetSecs):hh\\:mm\\:ss}";
-                if (TxtTimeElapsed != null) TxtTimeElapsed.Text = t;
-                if (TxtModernTimeElapsed != null) TxtModernTimeElapsed.Text = t;
-                ShowOsd($"Scrub: {t} / {_totalDuration:hh\\:mm\\:ss}");
+                UpdateSeekHoverPreview(slider, e);
+
+                if (e.LeftButton == MouseButtonState.Pressed && _isDraggingSlider)
+                {
+                    var pt = e.GetPosition(slider);
+                    double fraction = Math.Clamp(pt.X / slider.ActualWidth, 0.0, 1.0);
+                    double targetVal = fraction * 1000.0;
+                    slider.Value = targetVal;
+                    double targetSecs = fraction * _totalDuration.TotalSeconds;
+                    string t = $"{TimeSpan.FromSeconds(targetSecs):hh\\:mm\\:ss}";
+                    if (TxtTimeElapsed != null) TxtTimeElapsed.Text = t;
+                    if (TxtModernTimeElapsed != null) TxtModernTimeElapsed.Text = t;
+                    ShowOsd($"Scrub: {t} / {_totalDuration:hh\\:mm\\:ss}");
+                }
             }
         }
 
@@ -1591,7 +1690,36 @@ namespace OmniPlayer.UI
         {
             if (e.ClickCount == 2)
             {
+                var pt = e.GetPosition(VideoGrid);
+                double w = VideoGrid.ActualWidth;
+                if (w > 0)
+                {
+                    if (pt.X < w * 0.33)
+                    {
+                        // Double tap / click left side: Rewind 10s (YouTube / mobile style)
+                        SeekRelative(-10);
+                        ShowOsd("⏪ 10s Rewind");
+                        e.Handled = true;
+                        return;
+                    }
+                    else if (pt.X > w * 0.67)
+                    {
+                        // Double tap / click right side: Fast Forward 10s (YouTube / mobile style)
+                        SeekRelative(10);
+                        ShowOsd("⏩ 10s Forward");
+                        e.Handled = true;
+                        return;
+                    }
+                }
+                // Center double tap / click: Toggle fullscreen
                 BtnFullscreen_Click(sender, e);
+                e.Handled = true;
+            }
+            else if (e.ClickCount == 1)
+            {
+                // Single tap / click: Toggle play/pause (YouTube & mobile media player standard)
+                BtnPlayPause_Click(sender, e);
+                _lastMouseMoveTime = DateTime.UtcNow;
             }
         }
 
@@ -1817,6 +1945,16 @@ namespace OmniPlayer.UI
         }
 
         // ================= Tools Menu Handlers =================
+        private void MenuCameraStudio_Click(object sender, RoutedEventArgs e)
+        {
+            ToolsMenuController.Instance.ShowCameraStudioDialog(this);
+        }
+
+        private void MenuMediaLibrary_Click(object sender, RoutedEventArgs e)
+        {
+            ToolsMenuController.Instance.ShowMediaLibraryDashboardDialog(this);
+        }
+
         private void MenuMediaDownloader_Click(object sender, RoutedEventArgs e)
         {
             ToolsMenuController.Instance.ShowMediaDownloaderDialog(this);

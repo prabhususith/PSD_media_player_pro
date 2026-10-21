@@ -1,4 +1,4 @@
-﻿# Changelog â€” PSD Media Player Pro Edition
+# Changelog â€” PSD Media Player Pro Edition
 
 All notable changes to the PSD Media Player Pro Edition project are documented in this file.
 
@@ -7,6 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Author: Prabhu Kannan (PSD Technologies)  
 Support Contact: prabhukannanmail@gmail.com  
+
+---
+
+## [2.5.0-patch2] - 2026-10-21
+
+### Added
+- **Laptop & USB Camera Studio with Live Real-Time AR Effects**:
+  - Implemented `CameraStudioDialog.xaml` and `.cs` featuring hardware camera enumeration, device selector, mirror view flip (horizontal and vertical), and real-time canvas animation loop (60 FPS).
+  - Built 7 live augmented-reality (AR) visual effects:
+    - *Fire Over Head*: Dynamic multi-tongue procedural flame simulation and rising embers positioned overhead.
+    - *Falling Snow*: Multi-layered velocity-simulated falling snowflakes with random drift and ground settling.
+    - *Smiling Face*: Radiant neon tracked smile arc with glowing eye rings and cheek blush accents.
+    - *Matrix Code Rain*: Cyberpunk vertical falling green katakana glyph stream with phosphor fading.
+    - *Neon Cyber HUD*: Tactical geometric holographic corner brackets, target reticle, and targeting telemetry.
+    - *Night Vision*: Military NVG phosphorescent green monochrome grade with compass azimuth ring.
+    - *VHS 1980s Retro*: Blinking red REC watermark, scan jitter, tape distortion bands, and analog noise grain.
+  - Controls: Brightness, contrast, and saturation fine-tuning sliders; single high-resolution lossless snapshot capture; 5x rapid burst capture; video recording toggle; direct launcher to `%USERPROFILE%\Pictures\PSD_Camera`.
+  - Accessible via button on controls bar, View/Tools menu items, and keyboard shortcut `W` or `Ctrl+W`.
+
+- **Media Library & Device Auto-Scan Dashboard**:
+  - Implemented `MediaLibraryDashboardDialog.xaml` and `.cs` with background multi-threaded directory auto-scanner.
+  - Automatically indexes all media files across default user directories: Videos, Music, Pictures, and Downloads.
+  - Interactive telemetry metrics ribbon displaying live counts for Total Media, Video Tracks, Audio Tracks, and Total Storage footprint.
+  - Real-time search filter and category tab buttons (`All`, `Videos`, `Audio`, `Images`).
+  - Single-click `▶ Play` button and double-click grid handler dispatching directly into `MainWindow.PlayMedia()`.
+  - Custom folder ingestion via folder browser and direct Explorer location reveal button.
+  - Accessible via button on controls bar, View/Tools menu items, and keyboard shortcut `B` or `Ctrl+B`.
+
+- **YouTube-Style Scrub Hover Preview Popup**:
+  - Engineered floating preview popup (`PopupSeekPreview` and `PopupModernSeekPreview`) dynamically tracking cursor movement across `SliderTimeline` and `SliderModernTimeline`.
+  - Displays formatted `hh:mm:ss` timestamp badge alongside exact percentage position badge with themed drop-shadow borders.
+  - Features instantaneous auto-hide upon cursor leaving the slider bounding rectangle (`MouseLeave`).
+
+- **YouTube-Style Slow Motion Playback Engine**:
+  - Added dedicated slow motion toggle and cycler button (`BtnSlowMo`) on both standard and modern transport bars.
+  - Configured YouTube-standard slow-motion steps: `0.10x` (Ultra Slow Motion), `0.25x` (Quarter Speed), `0.50x` (Half Speed), `0.75x` (Gentle Slow Motion), and `1.00x` (Normal Speed).
+  - Integrated `--audio-time-stretch` in LibVLC initialization options for distortion-free audio pitch preservation across all playback rates.
+
+- **Touchpad & Mobile Touch Gesture System**:
+  - Double-tap on left third of video surface (`X < 33% Width`): triggers quick 10-second rewind with on-screen display badge.
+  - Double-tap on right third of video surface (`X > 67% Width`): triggers quick 10-second forward seek with on-screen display badge.
+  - Double-tap on center video surface: toggles true borderless fullscreen mode.
+  - Single tap on video surface: toggles Play / Pause.
+  - Two-finger touchpad horizontal scroll / Shift+MouseWheel: scrubs timeline backward / forward in 5-second increments.
+  - Two-finger touchpad vertical scroll / MouseWheel: adjusts volume in 5% increments.
+
+### Fixed
+- **Android APK Installation Infinite Loop Hang on Xiaomi Redmi Note 4 / Android 6.0**:
+  - Diagnosed package installer freeze caused by ART classloader double extraction deadlock when `PSDPlayerApplication` extended legacy `MultiDexApplication` and called `MultiDex.install(this)` on API 21+ ART runtimes.
+  - Reverted `PSDPlayerApplication` to standard `Application()`, completely eliminating classloader lockup on MIUI 8/9/10 package installer.
+  - Cleaned `android/app/build.gradle.kts`: removed legacy multidex dependency, standardized `versionCode = 1`, `versionName = "1.0.0"`.
+  - Verified package installation integrity using dual v1 (JAR signing) + v2 (APK Signature Scheme v2) signing and 4-byte zipalign verification.
 
 ---
 

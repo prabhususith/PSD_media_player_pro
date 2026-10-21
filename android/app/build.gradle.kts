@@ -22,10 +22,8 @@ android {
         applicationId = "com.psdtechnologies.psdplayer"
         minSdk = 21 // Android 5.0+ compatibility matching GoogleNotes reference profile
         targetSdk = 33 // Stable legacy binder range for Android 5.0 - 6.0 compatibility
-        versionCode = 2501
-        versionName = "2.5.0-patch1"
-
-        multiDexEnabled = true
+        versionCode = 1
+        versionName = "1.0.0"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -84,7 +82,6 @@ android {
 }
 
 dependencies {
-    implementation("androidx.multidex:multidex:2.0.1")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")

@@ -1,0 +1,190 @@
+<Window x:Class="OmniPlayer.UI.Views.CameraStudioDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PSD Media Player - Laptop &amp; USB Camera Studio (Live AR Effects)"
+        Height="720" Width="980"
+        MinHeight="600" MinWidth="800"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource OmniBackgroundBrush}"
+        Foreground="{DynamicResource OmniForegroundBrush}">
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource OmniControlBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource OmniForegroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource OmniBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="5"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Title Header -->
+            <RowDefinition Height="*"/>    <!-- Main Viewport & Effects Workspace -->
+            <RowDefinition Height="Auto"/> <!-- Status & Path Footer -->
+        </Grid.RowDefinitions>
+
+        <!-- Title Header -->
+        <Border Grid.Row="0" Margin="0,0,0,12" BorderBrush="{DynamicResource OmniBorderBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,10">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="📹 LIVE CAMERA &amp; AR EFFECTS STUDIO" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource OmniAccentBrush}"/>
+                    <Border Background="#2600FF9D" CornerRadius="4" Padding="6,2" Margin="10,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="PRO HARDWARE ENGINE" FontSize="10" FontWeight="Bold" Foreground="#00FF9D"/>
+                    </Border>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="Camera:" VerticalAlignment="Center" Foreground="{DynamicResource OmniMutedForegroundBrush}" Margin="0,0,8,0"/>
+                    <ComboBox x:Name="CmbCameraDevices" Width="200" Height="30" SelectedIndex="0"
+                              Background="{DynamicResource OmniControlBackgroundBrush}" Foreground="{DynamicResource OmniForegroundBrush}"
+                              SelectionChanged="CmbCameraDevices_SelectionChanged">
+                        <ComboBoxItem Content="Integrated Webcam (DirectShow)"/>
+                        <ComboBoxItem Content="USB Video Capture Device"/>
+                        <ComboBoxItem Content="Simulated Test Sensor Feed"/>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Viewport Area (Split: Left Viewport, Right Controls Panel) -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="280"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: Camera Viewport with AR Effects Overlay Canvas -->
+            <Border Grid.Column="0" Background="#0A0E14" CornerRadius="8" BorderBrush="{DynamicResource OmniBorderBrush}" BorderThickness="1.5" Margin="0,0,12,0" ClipToBounds="True">
+                <Grid x:Name="GridCameraContainer" SizeChanged="GridCameraContainer_SizeChanged">
+                    <!-- Base Video/Camera Surface -->
+                    <Border x:Name="CameraSurface" Background="#111827">
+                        <Grid>
+                            <!-- Simulated camera pattern / backdrop -->
+                            <Rectangle>
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#0F172A" Offset="0.0"/>
+                                        <GradientStop Color="#1E293B" Offset="0.5"/>
+                                        <GradientStop Color="#0F172A" Offset="1.0"/>
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+
+                            <!-- Optical Grid Reticle -->
+                            <Canvas x:Name="CanvasReticle" Opacity="0.35">
+                                <Line X1="0" Y1="50%" X2="100%" Y2="50%" Stroke="#00FF9D" StrokeDashArray="4,4" StrokeThickness="1"/>
+                                <Line X1="50%" Y1="0" X2="50%" Y2="100%" Stroke="#00FF9D" StrokeDashArray="4,4" StrokeThickness="1"/>
+                            </Canvas>
+
+                            <!-- Camera Active Status Indicator -->
+                            <Border HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16" Background="#B3000000" CornerRadius="4" Padding="8,4">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse x:Name="DotCameraActive" Width="8" Height="8" Fill="#10B981" Margin="0,0,6,0"/>
+                                    <TextBlock x:Name="TxtCameraStatus" Text="LIVE 1080p 60FPS" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Active Effect HUD Tag -->
+                            <Border HorizontalAlignment="Right" VerticalAlignment="Top" Margin="16" Background="#B3000000" CornerRadius="4" Padding="8,4">
+                                <TextBlock x:Name="TxtActiveEffectTag" Text="FX: CLEAN STREAM" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource OmniAccentBrush}"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Real-Time Interactive AR Effects Canvas Layer -->
+                    <Canvas x:Name="CanvasEffectsOverlay" IsHitTestVisible="False"/>
+
+                    <!-- Snapshot Flash Overlay Animation -->
+                    <Border x:Name="BorderFlash" Background="#FFFFFF" Opacity="0" IsHitTestVisible="False"/>
+                </Grid>
+            </Border>
+
+            <!-- Right: Camera Controls & AR Filter Palette -->
+            <Border Grid.Column="1" Background="{DynamicResource OmniSurfaceBrush}" CornerRadius="8" BorderBrush="{DynamicResource OmniBorderBrush}" BorderThickness="1" Padding="14">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <!-- AR Effects Selector -->
+                        <TextBlock Text="LIVE AR &amp; CAMERA EFFECTS" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource OmniAccentBrush}" Margin="0,0,0,8"/>
+                        
+                        <WrapPanel Margin="0,0,0,14">
+                            <Button x:Name="BtnFxClean" Content="Clean" Click="BtnEffect_Click" Tag="Clean" Width="116" Margin="0,0,8,8" FontWeight="SemiBold"/>
+                            <Button x:Name="BtnFxFire" Content="🔥 Fire Over Head" Click="BtnEffect_Click" Tag="Fire" Width="124" Margin="0,0,0,8" FontWeight="SemiBold"/>
+                            <Button x:Name="BtnFxSnow" Content="❄️ Falling Snow" Click="BtnEffect_Click" Tag="Snow" Width="116" Margin="0,0,8,8" FontWeight="SemiBold"/>
+                            <Button x:Name="BtnFxSmile" Content="😊 Smiling Face" Click="BtnEffect_Click" Tag="Smile" Width="124" Margin="0,0,0,8" FontWeight="SemiBold"/>
+                            <Button x:Name="BtnFxMatrix" Content="🟢 Matrix Rain" Click="BtnEffect_Click" Tag="Matrix" Width="116" Margin="0,0,8,8" FontWeight="SemiBold"/>
+                            <Button x:Name="BtnFxNeon" Content="⚡ Neon Edge" Click="BtnEffect_Click" Tag="Neon" Width="124" Margin="0,0,0,8" FontWeight="SemiBold"/>
+                            <Button x:Name="BtnFxNight" Content="🪖 Night Vision" Click="BtnEffect_Click" Tag="Night" Width="116" Margin="0,0,8,8" FontWeight="SemiBold"/>
+                            <Button x:Name="BtnFxVhs" Content="📼 VHS 1980s" Click="BtnEffect_Click" Tag="Vhs" Width="124" Margin="0,0,0,8" FontWeight="SemiBold"/>
+                        </WrapPanel>
+
+                        <!-- Camera Hardware Adjustments -->
+                        <TextBlock Text="CAMERA CALIBRATION" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource OmniAccentBrush}" Margin="0,4,0,8"/>
+
+                        <!-- Flip Horizontal (Mirror Selfie Mode) -->
+                        <CheckBox x:Name="ChkMirrorHorizontal" Content="Mirror View (Flip Horizontal)" IsChecked="True" Checked="ChkMirror_Changed" Unchecked="ChkMirror_Changed" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,0,0,10"/>
+                        <CheckBox x:Name="ChkFlipVertical" Content="Invert (Flip Vertical)" Checked="ChkFlip_Changed" Unchecked="ChkFlip_Changed" Foreground="{DynamicResource OmniForegroundBrush}" Margin="0,0,0,14"/>
+
+                        <!-- Brightness Slider -->
+                        <Grid Margin="0,0,0,8">
+                            <TextBlock Text="Brightness" FontSize="11" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                            <TextBlock x:Name="TxtBrightnessVal" Text="0" FontSize="11" Foreground="{DynamicResource OmniForegroundBrush}" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Slider x:Name="SliderBrightness" Minimum="-50" Maximum="50" Value="0" ValueChanged="SliderAdjust_ValueChanged" Margin="0,0,0,12"/>
+
+                        <!-- Contrast Slider -->
+                        <Grid Margin="0,0,0,8">
+                            <TextBlock Text="Contrast" FontSize="11" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                            <TextBlock x:Name="TxtContrastVal" Text="0" FontSize="11" Foreground="{DynamicResource OmniForegroundBrush}" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Slider x:Name="SliderContrast" Minimum="-50" Maximum="50" Value="0" ValueChanged="SliderAdjust_ValueChanged" Margin="0,0,0,12"/>
+
+                        <!-- Saturation Slider -->
+                        <Grid Margin="0,0,0,8">
+                            <TextBlock Text="Saturation" FontSize="11" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                            <TextBlock x:Name="TxtSaturationVal" Text="0" FontSize="11" Foreground="{DynamicResource OmniForegroundBrush}" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Slider x:Name="SliderSaturation" Minimum="-50" Maximum="50" Value="0" ValueChanged="SliderAdjust_ValueChanged" Margin="0,0,0,16"/>
+
+                        <!-- Capture Action Buttons -->
+                        <TextBlock Text="CAPTURE &amp; RECORDING" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource OmniAccentBrush}" Margin="0,4,0,10"/>
+
+                        <!-- 1-Click High-Res Photo Capture -->
+                        <Button x:Name="BtnCapturePhoto" Content="📸 Take Photo Snapshot" Click="BtnCapturePhoto_Click" Height="38" FontWeight="Bold" Background="{DynamicResource OmniAccentBrush}" Foreground="#FFFFFF" BorderThickness="0" Margin="0,0,0,8"/>
+
+                        <!-- Burst Capture -->
+                        <Button x:Name="BtnBurstCapture" Content="💥 5x Rapid Burst Capture" Click="BtnBurstCapture_Click" Height="34" Margin="0,0,0,8"/>
+
+                        <!-- Video Recording -->
+                        <Button x:Name="BtnRecordVideo" Content="🔴 Start Video Recording" Click="BtnRecordVideo_Click" Height="34" Foreground="#EF5350" Margin="0,0,0,8"/>
+
+                        <!-- Open Destination Folder -->
+                        <Button Content="📂 Open Camera Gallery" Click="BtnOpenGallery_Click" Height="32"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <!-- Status & Path Footer -->
+        <Border Grid.Row="2" Margin="0,12,0,0" Background="{DynamicResource OmniSurfaceBrush}" CornerRadius="6" Padding="12,8" BorderBrush="{DynamicResource OmniBorderBrush}" BorderThickness="1">
+            <Grid>
+                <TextBlock x:Name="TxtFooterStatus" Text="Ready: Camera sensor calibrated and synchronized." FontSize="11" Foreground="{DynamicResource OmniMutedForegroundBrush}"/>
+                <TextBlock x:Name="TxtSavePath" Text="%USERPROFILE%\Pictures\PSD_Camera" FontSize="11" Foreground="{DynamicResource OmniForegroundBrush}" HorizontalAlignment="Right"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

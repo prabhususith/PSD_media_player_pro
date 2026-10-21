@@ -216,6 +216,88 @@ namespace OmniPlayer.UI.Controls
             ShowHelpGuideDialog(owner, 7);
         }
 
+        private CameraStudioDialog? _cameraStudioDialog;
+
+        public void ShowCameraStudioDialog(Window? owner = null)
+        {
+            try
+            {
+                if (_cameraStudioDialog == null || !_cameraStudioDialog.IsLoaded)
+                {
+                    var parent = owner ?? Application.Current?.MainWindow;
+                    _cameraStudioDialog = new CameraStudioDialog();
+                    if (parent != null && parent.IsLoaded)
+                    {
+                        _cameraStudioDialog.Owner = parent;
+                    }
+                    _cameraStudioDialog.Closed += (s, e) => _cameraStudioDialog = null;
+                    _cameraStudioDialog.Show();
+                }
+                else
+                {
+                    if (_cameraStudioDialog.WindowState == WindowState.Minimized)
+                    {
+                        _cameraStudioDialog.WindowState = WindowState.Normal;
+                    }
+                    _cameraStudioDialog.Activate();
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusNotification?.Invoke($"Camera Studio Error: {ex.Message}");
+            }
+        }
+
+        private MediaLibraryDashboardDialog? _mediaLibraryDialog;
+
+        public void ShowMediaLibraryDashboardDialog(Window? owner = null)
+        {
+            try
+            {
+                if (_mediaLibraryDialog == null || !_mediaLibraryDialog.IsLoaded)
+                {
+                    var parent = owner ?? Application.Current?.MainWindow;
+                    _mediaLibraryDialog = new MediaLibraryDashboardDialog();
+                    if (parent != null && parent.IsLoaded)
+                    {
+                        _mediaLibraryDialog.Owner = parent;
+                    }
+                    _mediaLibraryDialog.Closed += (s, e) => _mediaLibraryDialog = null;
+                    _mediaLibraryDialog.Show();
+                }
+                else
+                {
+                    if (_mediaLibraryDialog.WindowState == WindowState.Minimized)
+                    {
+                        _mediaLibraryDialog.WindowState = WindowState.Normal;
+                    }
+                    _mediaLibraryDialog.Activate();
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusNotification?.Invoke($"Media Library Error: {ex.Message}");
+            }
+        }
+
+        public void ShowSettingsDialog(Window? owner = null)
+        {
+            try
+            {
+                var parent = owner ?? Application.Current?.MainWindow;
+                var dlg = new SettingsDialog();
+                if (parent != null && parent.IsLoaded)
+                {
+                    dlg.Owner = parent;
+                }
+                dlg.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                StatusNotification?.Invoke($"Settings Error: {ex.Message}");
+            }
+        }
+
         public async Task<string> DownloadSubtitlesAsync(string mediaTitle, string language = "en")
         {
             StatusNotification?.Invoke($"Searching OpenSubtitles for '{mediaTitle}' [{language}]...");
