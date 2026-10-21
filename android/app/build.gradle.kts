@@ -9,9 +9,9 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("debug.keystore")
+            storeFile = file("release.keystore")
             storePassword = "android"
-            keyAlias = "androiddebugkey"
+            keyAlias = "psdplayerkey"
             keyPassword = "android"
             enableV1Signing = true // CRITICAL: Required for Android 6.0 JAR signature verification
             enableV2Signing = true // Full APK Signature Scheme v2 for modern Android
@@ -51,12 +51,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
 
     buildFeatures {
@@ -88,6 +89,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
     implementation("androidx.multidex:multidex:2.0.1")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")

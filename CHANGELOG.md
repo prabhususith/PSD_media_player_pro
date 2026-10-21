@@ -13,13 +13,12 @@ Support Contact: prabhukannanmail@gmail.com
 ## [2.5.0-patch1] - 2026-10-21
 
 ### Fixed
-- **Xiaomi Redmi Note 4 & Android 6.0 APK Installation**: Resolved package installer failure ("There was a problem while parsing the package") and installation progress bar freeze on Android 6.0 Marshmallow (MIUI 8/9/10, Snapdragon 625).
-  - Enforced dual APK Signature Scheme v1 (JAR signing) and Scheme v2 signing via Gradle signing configuration and Android SDK `apksigner`.
-  - Configured legacy MultiDex architecture via `androidx.multidex:multidex:2.0.1` and `androidx.multidex.MultiDexApplication` base class.
-  - Enabled legacy native library extraction (`android:extractNativeLibs="true"` and `useLegacyPackaging = true`) to prevent PackageManager deadlocks during DEX/ELF decompression.
-  - Removed API 29+ manifest attributes (`foregroundServiceType="mediaPlayback"`) incompatible with API 23 runtimes.
-  - Replaced modern adaptive vector mipmap launcher reference with raster drawable `@drawable/ic_launcher` to resolve MIUI package parser crashes.
-  - Packaged and distributed both `PSDPlayer-Pro-v2.5.0-Release-universal.apk` and `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` (8,230,872 bytes, SHA-256: `FE5C067B3B8332B8CF63A06A4A9BCF8BD733ED0FC43A8CB951A6497316389BB2`).
+- **Xiaomi Redmi Note 4 & Android 6.0 APK Installation**: Fully resolved package installer failure ("There was a problem while parsing the package") and installation progress bar freeze on Android 6.0 Marshmallow (MIUI 8/9/10, Snapdragon 625).
+  - Generated dedicated release keystore with backdated validity start date (`2015-01-01`), eliminating `CertificateNotYetValidException` during package parse on devices with current dates.
+  - Eliminated vector/adaptive XML icon references in package manifest; generated and deployed native raster PNG icons across all density buckets (`mipmap-mdpi`, `mipmap-hdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, `mipmap-xxxhdpi`) so Android 6.0 `PackageParser` loads the application bitmap cleanly without throwing XML inflation exceptions.
+  - Enabled L8 core library desugaring (`com.android.tools:desugar_jdk_libs:2.0.4`) with Java 8 bytecode targets (`JavaVersion.VERSION_1_8` / `jvmTarget = "1.8"`), guaranteeing compatibility with Dalvik/ART on Android 6.0.
+  - Explicitly registered `PSDPlayerApplication` with `MultiDex.install(this)` inside `attachBaseContext` to ensure multi-DEX extraction finishes smoothly on low-memory MIUI devices.
+  - Packaged and distributed both `PSDPlayer-Pro-v2.5.0-Release-universal.apk` and `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` (8,569,210 bytes, SHA-256: `D955E8E64084748404003D5A89ADCAE776AC0DA7D85EA60A38A82DDE1BE1C8AB`).
 
 ---
 

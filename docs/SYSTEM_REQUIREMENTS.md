@@ -131,5 +131,7 @@ The standalone portable distributions and Inno Setup installers include self-con
 - **MultiDex Engine**: Integrated `androidx.multidex:multidex:2.0.1` via `androidx.multidex.MultiDexApplication` base class to prevent package installer hanging during ahead-of-time (AOT) DEX extraction on MIUI 8/9/10.
 - **Native Library Extraction**: Configured `android:extractNativeLibs="true"` with legacy JNI packaging (`useLegacyPackaging = true`) ensuring 32-bit `armeabi-v7a` and 64-bit `arm64-v8a` shared objects (`.so`) are cleanly extracted to device storage without installer timeouts.
 - **Hardware Acceleration**: Direct zero-copy `SurfaceView` video rendering backed by Android `MediaCodec` with graceful multi-threaded CPU decoder fallback (Dav1d, FFmpeg).
-- **Universal Deliverable**: `PSDPlayer-Pro-v2.5.0-Release-universal.apk` (Size: 8,230,872 bytes, SHA-256: `FE5C067B3B8332B8CF63A06A4A9BCF8BD733ED0FC43A8CB951A6497316389BB2`).
-- **Dedicated Legacy Deliverable**: `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` (Size: 8,230,872 bytes, SHA-256: `FE5C067B3B8332B8CF63A06A4A9BCF8BD733ED0FC43A8CB951A6497316389BB2`).
+- **Application Icon Format**: Strict raster PNG bitmap assets deployed across all density buckets (`mipmap-mdpi`, `mipmap-hdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, `mipmap-xxxhdpi`) preventing Android 6.0 `PackageParser` crashes caused by XML vector or adaptive icons.
+- **Java Runtime Desugaring**: Full Java 8+ API desugaring (`desugar_jdk_libs:2.0.4`) via L8 desugar compiler, ensuring Java bytecode compatibility on Android 6.0 Marshmallow.
+- **Universal Deliverable**: `PSDPlayer-Pro-v2.5.0-Release-universal.apk` (Size: 8,569,210 bytes, SHA-256: `D955E8E64084748404003D5A89ADCAE776AC0DA7D85EA60A38A82DDE1BE1C8AB`).
+- **Dedicated Legacy Deliverable**: `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` (Size: 8,569,210 bytes, SHA-256: `D955E8E64084748404003D5A89ADCAE776AC0DA7D85EA60A38A82DDE1BE1C8AB`).

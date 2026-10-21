@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 
 /**
@@ -16,6 +17,11 @@ class PSDPlayerApplication : MultiDexApplication() {
         const val PLAYBACK_CHANNEL_ID = "psd_playback_channel"
         lateinit var instance: PSDPlayerApplication
             private set
+    }
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
     }
 
     override fun onCreate() {

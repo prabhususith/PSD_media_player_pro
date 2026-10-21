@@ -20,12 +20,12 @@
     <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
-        android:name="androidx.multidex.MultiDexApplication"
+        android:name=".PSDPlayerApplication"
         android:allowBackup="true"
         android:extractNativeLibs="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:hardwareAccelerated="true"
         android:largeHeap="true"
