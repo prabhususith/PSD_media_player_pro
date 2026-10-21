@@ -1,4 +1,4 @@
-# Changelog — PSD Media Player Pro Edition
+﻿# Changelog â€” PSD Media Player Pro Edition
 
 All notable changes to the PSD Media Player Pro Edition project are documented in this file.
 
@@ -11,6 +11,19 @@ Support Contact: prabhukannanmail@gmail.com
 ---
 
 ## [2.5.0-patch1] - 2026-10-21
+
+### Optimized
+- **Windows Desktop Full Release Pipeline**:
+  - Re-compiled and verified all 110 theme XAML packs with zero syntax or resource resolution errors.
+  - Published and compressed single-file self-contained distributions for x64 (PSDPlayer-Pro-v2.5.0-Portable-win-x64.zip) and ARM64 (PSDPlayer-Pro-v2.5.0-Portable-win-arm64.zip) with embedded LibVLC native libraries and assets.
+  - Compiled Inno Setup 6.7.3 installer (PSDPlayer-Pro-Setup-v2.5.0-x64.exe) and WiX Toolset v4 enterprise MSI package (PSDPlayer-Enterprise-x64.msi).
+  - Resolved WiX working-directory binding path resolution in uild-all.ps1.
+- **Android Platform Source Optimizations**:
+  - Eliminated deprecated MediaSessionCompat transport flags in AudioService.kt.
+  - Replaced legacy MediaCodecList static calls with modern MediaCodecList(REGULAR_CODECS) in HardwareCodecManager.kt.
+  - Upgraded deprecated esources.getColor to ContextCompat.getColor in EqualizerBottomSheet.kt.
+  - Cleaned unused parameters and variables in PlayerActivity.kt and EqualizerController.kt.
+  - Re-compiled both Release and Debug APKs with 0 compiler warnings and verified dual v1/v2 signatures.
 
 ### Fixed
 - **Xiaomi Redmi Note 4 & Android 5.0/6.0 APK Installation**: Fully resolved package installer failure ("There was a problem while parsing the package") by aligning build configuration with working reference project (`GoogleNotesPsd`).

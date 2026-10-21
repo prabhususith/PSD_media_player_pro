@@ -124,7 +124,7 @@ class EqualizerBottomSheet : BottomSheetDialogFragment() {
             val txtGain = TextView(requireContext()).apply {
                 text = "${currentLevel / 100}dB"
                 textSize = 10f
-                setTextColor(resources.getColor(R.color.text_secondary))
+                setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.text_secondary))
             }
 
             val seekBar = SeekBar(requireContext()).apply {
@@ -151,7 +151,7 @@ class EqualizerBottomSheet : BottomSheetDialogFragment() {
             val txtFreq = TextView(requireContext()).apply {
                 text = if (freqHz >= 1000) "${freqHz / 1000}k" else "${freqHz}"
                 textSize = 11f
-                setTextColor(resources.getColor(R.color.text_primary))
+                setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.text_primary))
             }
 
             bandColumn.addView(txtGain)

@@ -138,7 +138,6 @@ class EqualizerController {
     fun applyPreset(presetIndex: Int) {
         val bandCount = getBandCount()
         val (minLevel, maxLevel) = getBandLevelRange()
-        val step = (maxLevel - minLevel) / 10
 
         when (presetIndex) {
             0 -> resetToFlat() // Flat

@@ -82,11 +82,16 @@ if (-not (Test-Path $WixExe)) {
 
 if ((Test-Path $WixExe) -and (-not $SkipInstaller)) {
     Write-Host ">>> Compiling WiX MSI using: $WixExe" -ForegroundColor Cyan
-    $WxsFile = Join-Path $RepoRoot "src\OmniPlayer.Packaging\WiX\Package.wxs"
+    $WxsDir = Join-Path $RepoRoot "src\OmniPlayer.Packaging\WiX"
     $MsiDir = Join-Path $DistDir "msi"
     New-Item -ItemType Directory -Force -Path $MsiDir | Out-Null
     $MsiOutput = Join-Path $MsiDir "PSDPlayer-Enterprise-x64.msi"
-    & $WixExe build $WxsFile -o $MsiOutput
+    Push-Location $WxsDir
+    try {
+        & $WixExe build "Package.wxs" -o $MsiOutput
+    } finally {
+        Pop-Location
+    }
     Write-Host ">>> WiX enterprise MSI package compiled successfully: $MsiOutput" -ForegroundColor Green
 } else {
     Write-Host ">>> WiX Toolset compiler not found." -ForegroundColor Yellow

@@ -231,7 +231,7 @@ class PlayerActivity : AppCompatActivity(), GestureOverlayView.GestureListener {
         })
 
         // Engine callbacks
-        playerEngine.onPlaybackStateChanged = { isPlaying, isBuffering ->
+        playerEngine.onPlaybackStateChanged = { isPlaying, _ ->
             updatePlayPauseButton(isPlaying)
         }
 
@@ -367,6 +367,7 @@ class PlayerActivity : AppCompatActivity(), GestureOverlayView.GestureListener {
             // Android 6.0/7.0 Overlay Window
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
                 val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
+                @Suppress("DEPRECATION")
                 startActivityForResult(intent, OVERLAY_PERMISSION_REQ)
             } else {
                 FloatingPipService.start(this)
@@ -382,7 +383,7 @@ class PlayerActivity : AppCompatActivity(), GestureOverlayView.GestureListener {
             val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
             val file = File(dir, "PSD_Snap_${timeStamp}.png")
 
-            binding.mediaPlayerView.videoSurfaceView?.let { surfaceView ->
+            binding.mediaPlayerView.videoSurfaceView?.let { _ ->
                 Toast.makeText(this, "Snapshot saved: ${file.name}", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {

@@ -74,10 +74,6 @@ class AudioService : Service() {
 
     private fun setupMediaSession() {
         mediaSession = MediaSessionCompat(this, "PSDAudioServiceSession").apply {
-            setFlags(
-                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or
-                        MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
-            )
             setPlaybackState(
                 PlaybackStateCompat.Builder()
                     .setActions(

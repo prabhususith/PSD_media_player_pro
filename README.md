@@ -96,14 +96,14 @@ All official release binaries are compiled with Release optimizations, code-sign
 
 | Distribution Package | Architecture | Format | File Size | Description and Recommended Use | Direct Download Link |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Windows Setup Installer** | x64 | `.exe` | 414.28 MB | Standard desktop setup with wizard, file associations, desktop shortcuts, and uninstaller. | [Download PSDPlayer-Pro-Setup-v2.5.0-x64.exe](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-Setup-v2.5.0-x64.exe) |
-| **Enterprise MSI Installer** | x64 | `.msi` | 198.86 MB | WiX Toolset v4 enterprise package for Active Directory GPO and Microsoft Intune silent rollout. | [Download PSDPlayer-Enterprise-x64.msi](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Enterprise-x64.msi) |
+| **Windows Setup Installer** | x64 | `.exe` | 414.29 MB | Standard desktop setup with wizard, file associations, desktop shortcuts, and uninstaller. | [Download PSDPlayer-Pro-Setup-v2.5.0-x64.exe](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-Setup-v2.5.0-x64.exe) |
+| **Enterprise MSI Installer** | x64 | `.msi` | 198.89 MB | WiX Toolset v4 enterprise package for Active Directory GPO and Microsoft Intune silent rollout. | [Download PSDPlayer-Enterprise-x64.msi](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Enterprise-x64.msi) |
 | **Standalone Executable** | x64 | `.exe` | 205.43 MB | Direct single-file executable. Runs without installation or background service prerequisites. | [Download PSDPlayer.exe](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer.exe) |
-| **Portable Archive (x64)** | x64 | `.zip` | 447.55 MB | Complete self-contained portable distribution. Extract and run from local drives or USB media. | [Download PSDPlayer-Pro-v2.5.0-Portable-win-x64.zip](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-Portable-win-x64.zip) |
-| **Portable Archive (ARM64)**| ARM64 | `.zip` | 435.06 MB | Native ARM64 portable package compiled for Snapdragon X Elite, X Plus, and Surface Pro ARM64 devices. | [Download PSDPlayer-Pro-v2.5.0-Portable-win-arm64.zip](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-Portable-win-arm64.zip) |
+| **Portable Archive (x64)** | x64 | `.zip` | 447.62 MB | Complete self-contained portable distribution. Extract and run from local drives or USB media. | [Download PSDPlayer-Pro-v2.5.0-Portable-win-x64.zip](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-Portable-win-x64.zip) |
+| **Portable Archive (ARM64)**| ARM64 | `.zip` | 435.13 MB | Native ARM64 portable package compiled for Snapdragon X Elite, X Plus, and Surface Pro ARM64 devices. | [Download PSDPlayer-Pro-v2.5.0-Portable-win-arm64.zip](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-Portable-win-arm64.zip) |
 | **Android Universal Package** | Universal (ARM64 / ARMv7) | `.apk` | 8.00 MB | Native Android edition for Android 5.0+ (API 21-35), signed with dual Scheme v1 + v2, raster PNG icons, Java 17 toolchain, fully validated on Xiaomi Redmi Note 4 and modern Android devices. | [Download PSDPlayer-Pro-v2.5.0-Release-universal.apk](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-Release-universal.apk) |
 | **Android Redmi Note 4 Edition** | Universal (ARM64 / ARMv7) | `.apk` | 8.00 MB | Dedicated release package verified with Scheme v1 JAR signing, clean manifest matching GoogleNotes reference build, raster PNG icons, and API 21+ base for Xiaomi Redmi Note 4 (MIUI 8/9/10). | [Download PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk) |
-| **Android Redmi Note 4 (Debug Mirror)** | Universal (ARM64 / ARMv7) | `.apk` | 9.81 MB | Direct debug variant signed with standard Android debug key and debuggable flag enabled, exact structural mirror of GoogleNotes reference build for maximum compatibility on MIUI. | [Download PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk) |
+| **Android Redmi Note 4 (Debug Mirror)** | Universal (ARM64 / ARMv7) | `.apk` | 9.87 MB | Direct debug variant signed with standard Android debug key and debuggable flag enabled, exact structural mirror of GoogleNotes reference build for maximum compatibility on MIUI. | [Download PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk) |
 
 *Browse all release notes, release tags, and historical artifacts on the [Official GitHub Releases Portal](https://github.com/prabhususith/PSD_media_player_pro/releases/tag/v2.5.0).*
 
@@ -127,14 +127,14 @@ certutil -hashfile PSDPlayer-Pro-Setup-v2.5.0-x64.exe SHA256
 
 | File Name | Exact Size (Bytes) | Cryptographic SHA-256 Hash |
 | :--- | :--- | :--- |
-| `PSDPlayer-Pro-Setup-v2.5.0-x64.exe` | 434,406,766 | `E44DEF4635BC14C6E5C73748014E17B1171B4783E6DB2DECE292D23CC4B8D78C` |
-| `PSDPlayer-Enterprise-x64.msi` | 208,515,072 | `BEA5B598502AB1CACA81727A500E370634B98A918E15C17FC775C6560E1C8591` |
-| `PSDPlayer.exe` | 215,412,010 | `801EACA7A8F500F5A36A3DA1D10D0354E22465C12403F17B1433BD199A5D5A5B` |
-| `PSDPlayer-Pro-v2.5.0-Portable-win-x64.zip` | 469,287,881 | `E55BC744737FDDBBAED205AF522C941FB217B5B63AB9A255D979C82D00B87BC1` |
-| `PSDPlayer-Pro-v2.5.0-Portable-win-arm64.zip` | 456,191,583 | `77CC0749E0E48D7A142406AC9E2ACBCB8EB408C77DA338A54583ED601F0CEF95` |
-| `PSDPlayer-Pro-v2.5.0-Release-universal.apk` | 8,393,411 | `E642782B1F1D136B6291983B256F8B468855D83FABE8ACB99AA93D5D841D4EB6` |
-| `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` | 8,393,411 | `E642782B1F1D136B6291983B256F8B468855D83FABE8ACB99AA93D5D841D4EB6` |
-| `PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk` | 10,286,755 | `F0198F3804B051EED35A3FB496CE0493A248C3D4D099CFB674D3E10F718EA408` |
+| `PSDPlayer-Pro-Setup-v2.5.0-x64.exe` | 434,419,379 | `D78CAE33E649948640F55B3115AA6073394700333BF75718A5F1E587D8663B11` |
+| `PSDPlayer-Enterprise-x64.msi` | 208,551,936 | `1963237B54E5DAB88A4CF5710E386B8D1F61499F0BED37B532231A8F7EE7D77B` |
+| `PSDPlayer.exe` | 215,412,718 | `4D3F97FE89183ADDE056EDB501EE5E78CFE74445012F44495A1F0B78AFCFB32B` |
+| `PSDPlayer-Pro-v2.5.0-Portable-win-x64.zip` | 469,367,198 | `3CB980BD0954E62A3A22FD20C23A6113132C246F7C6668DE40D5EF8EB1F3ED50` |
+| `PSDPlayer-Pro-v2.5.0-Portable-win-arm64.zip` | 456,270,909 | `5FEA25C435D7F8DA308C7A7D444EAE8EAB4F7C170D4ECEDFA29467A2575EF779` |
+| `PSDPlayer-Pro-v2.5.0-Release-universal.apk` | 8,393,430 | `1BC1D2943E22DC29AB71B2DA5443ED6095194D641A2EBC787EBFA775F03F215D` |
+| `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` | 8,393,430 | `1BC1D2943E22DC29AB71B2DA5443ED6095194D641A2EBC787EBFA775F03F215D` |
+| `PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk` | 10,351,376 | `3D1D906E466636F1A210B4EB5F26C8C9D57A69936A2C6C7550E4835FC267246D` |
 
 ---
 

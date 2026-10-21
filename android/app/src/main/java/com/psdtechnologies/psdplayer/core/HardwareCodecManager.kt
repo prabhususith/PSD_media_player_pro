@@ -20,10 +20,14 @@ object HardwareCodecManager {
 
     fun getHardwareCapabilities(): List<CodecCapability> {
         val list = mutableListOf<CodecCapability>()
-        val codecCount = MediaCodecList.getCodecCount()
+        val codecInfos = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+        } else {
+            @Suppress("DEPRECATION")
+            (0 until MediaCodecList.getCodecCount()).map { MediaCodecList.getCodecInfoAt(it) }.toTypedArray()
+        }
 
-        for (i in 0 until codecCount) {
-            val info = MediaCodecList.getCodecInfoAt(i)
+        for (info in codecInfos) {
             if (info.isEncoder) continue
 
             val supportedTypes = info.supportedTypes

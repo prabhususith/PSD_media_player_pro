@@ -133,7 +133,7 @@ The standalone portable distributions and Inno Setup installers include self-con
 - **MultiDex Engine**: Integrated `androidx.multidex:multidex:2.0.1` via `PSDPlayerApplication` with `MultiDex.install(this)` to prevent package installer hanging during ahead-of-time (AOT) DEX extraction on MIUI 8/9/10.
 - **Hardware Acceleration**: Direct zero-copy `SurfaceView` video rendering backed by Android `MediaCodec` with graceful multi-threaded CPU decoder fallback (Dav1d, FFmpeg).
 - **Application Icon Format**: Strict raster PNG bitmap assets deployed across all density buckets (`mipmap-mdpi`, `mipmap-hdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, `mipmap-xxxhdpi`) preventing Android `PackageParser` crashes caused by XML vector or adaptive icons.
-- **Java Runtime Desugaring**: Full Java 8+ API desugaring (`desugar_jdk_libs:2.0.4`) via L8 desugar compiler, ensuring Java bytecode compatibility on older Android runtimes.
-- **Universal Release Deliverable**: `PSDPlayer-Pro-v2.5.0-Release-universal.apk` (Size: 8,393,411 bytes, SHA-256: `E642782B1F1D136B6291983B256F8B468855D83FABE8ACB99AA93D5D841D4EB6`).
-- **Dedicated Redmi Note 4 Deliverable**: `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` (Size: 8,393,411 bytes, SHA-256: `E642782B1F1D136B6291983B256F8B468855D83FABE8ACB99AA93D5D841D4EB6`).
-- **Redmi Note 4 Debug Mirror Deliverable**: `PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk` (Size: 10,286,755 bytes, SHA-256: `F0198F3804B051EED35A3FB496CE0493A248C3D4D099CFB674D3E10F718EA408`).
+- **Toolchain & Bytecode Target**: Standardized on Java 17 toolchain (`compileOptions` & `kotlinOptions`) with AndroidX modern libraries and clean deprecation handling.
+- **Universal Release Deliverable**: `PSDPlayer-Pro-v2.5.0-Release-universal.apk` (Size: 8,393,430 bytes, SHA-256: `1BC1D2943E22DC29AB71B2DA5443ED6095194D641A2EBC787EBFA775F03F215D`).
+- **Dedicated Redmi Note 4 Deliverable**: `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` (Size: 8,393,430 bytes, SHA-256: `1BC1D2943E22DC29AB71B2DA5443ED6095194D641A2EBC787EBFA775F03F215D`).
+- **Redmi Note 4 Debug Mirror Deliverable**: `PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk` (Size: 10,351,376 bytes, SHA-256: `3D1D906E466636F1A210B4EB5F26C8C9D57A69936A2C6C7550E4835FC267246D`).
