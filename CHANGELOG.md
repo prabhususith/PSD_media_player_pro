@@ -14,6 +14,7 @@ Support Contact: prabhukannanmail@gmail.com
 
 ### Added
 - **Startup Diagnostics and Self-Healing Asset Resolver**: Implemented `InitializeWindowIconSafely()` runtime fallback loader in `MainWindow.xaml.cs` to prevent BAML TypeConverter exceptions when resolving window icons from disk, application root, or assembly pack URIs.
+- **PSD Media Player Pro (Android Edition)**: Released native Android edition (`com.psdtechnologies.psdplayer`) supporting Android 6.0 Marshmallow (API 23) through Android 15/16+ (API 35), benchmarked on Qualcomm Snapdragon 625 (Xiaomi Redmi Note 4). Features hardware MediaCodec acceleration, SurfaceView zero-copy rendering, multi-touch gestures (brightness, volume, seek, pinch zoom), 10/31-band Equalizer, background audio playback with foreground notification, dual-mode floating PiP (Android 8.0+ native and Android 6.0/7.0 system overlay), and 110+ ported theme skins.
 - **Official Brand Vector and Icon Integration**: Added high-resolution `psd-player-logo.svg`, 256x256 `psd-player-logo.png`, and multi-resolution `psd-player-icon.ico` directly embedded as assembly resources and packaged with portable binaries.
 - **Enterprise Silent Installer Configurations**: Enhanced Inno Setup (`omni-player.iss`) and WiX Toolset (`Package.wxs`) with automated Assets directory deployment, application association, and per-machine GPO silent rollout capabilities.
 - **Process Lock Safeguard**: Integrated automatic process termination logic into `build-all.ps1` to prevent unauthorized access exceptions during packaging of active executables.

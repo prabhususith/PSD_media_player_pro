@@ -3,6 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 [![Version: v2.5.0 LTS](https://img.shields.io/badge/Release-v2.5.0%20LTS-brightgreen.svg?style=flat-square)](https://github.com/prabhususith/PSD_media_player_pro/releases/tag/v2.5.0)
 [![Platform: Windows 10 / 11](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011%20(x64%20%2F%20ARM64)-informational.svg?style=flat-square)](docs/SYSTEM_REQUIREMENTS.md)
+[![Android: 6.0 - 15+](https://img.shields.io/badge/Android-API%2023--35%20(Marshmallow%20to%2015)-green.svg?style=flat-square)](docs/SYSTEM_REQUIREMENTS.md)
 [![Rendering: Direct3D 11VA](https://img.shields.io/badge/Rendering-Direct3D%2011VA-orange.svg?style=flat-square)](docs/SYSTEM_REQUIREMENTS.md)
 [![Audio: NAudio 31--Band WASAPI](https://img.shields.io/badge/Audio-31--Band%20WASAPI%20DSP-purple.svg?style=flat-square)](docs/USER_GUIDE.md)
 [![Engine: LibVLC 3.0.24 LTS](https://img.shields.io/badge/Engine-LibVLC%203.0.24%20LTS-success.svg?style=flat-square)](https://www.videolan.org/)
@@ -100,6 +101,7 @@ All official release binaries are compiled with Release optimizations, code-sign
 | **Standalone Executable** | x64 | `.exe` | 205.43 MB | Direct single-file executable. Runs without installation or background service prerequisites. | [Download PSDPlayer.exe](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer.exe) |
 | **Portable Archive (x64)** | x64 | `.zip` | 447.55 MB | Complete self-contained portable distribution. Extract and run from local drives or USB media. | [Download PSDPlayer-Pro-v2.5.0-Portable-win-x64.zip](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-Portable-win-x64.zip) |
 | **Portable Archive (ARM64)**| ARM64 | `.zip` | 435.06 MB | Native ARM64 portable package compiled for Snapdragon X Elite, X Plus, and Surface Pro ARM64 devices. | [Download PSDPlayer-Pro-v2.5.0-Portable-win-arm64.zip](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-Portable-win-arm64.zip) |
+| **Android Universal Package** | Universal (ARM64 / ARMv7) | `.apk` | 7.86 MB | Native Android edition for Android 6.0+ (API 23-35), optimized for Xiaomi Redmi Note 4 and modern devices. | [Download PSDPlayer-Pro-v2.5.0-Release-universal.apk](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-Release-universal.apk) |
 
 *Browse all release notes, release tags, and historical artifacts on the [Official GitHub Releases Portal](https://github.com/prabhususith/PSD_media_player_pro/releases/tag/v2.5.0).*
 
@@ -128,6 +130,7 @@ certutil -hashfile PSDPlayer-Pro-Setup-v2.5.0-x64.exe SHA256
 | `PSDPlayer.exe` | 215,412,010 | `801EACA7A8F500F5A36A3DA1D10D0354E22465C12403F17B1433BD199A5D5A5B` |
 | `PSDPlayer-Pro-v2.5.0-Portable-win-x64.zip` | 469,287,881 | `E55BC744737FDDBBAED205AF522C941FB217B5B63AB9A255D979C82D00B87BC1` |
 | `PSDPlayer-Pro-v2.5.0-Portable-win-arm64.zip` | 456,191,583 | `77CC0749E0E48D7A142406AC9E2ACBCB8EB408C77DA338A54583ED601F0CEF95` |
+| `PSDPlayer-Pro-v2.5.0-Release-universal.apk` | 8,243,933 | `56C67501EDF13B0955CBCE0BD785C391A8ECAF8E12FE1843AA2039B32CB5E871` |
 
 ---
 
@@ -157,6 +160,16 @@ Detailed requirements and codec specifications are maintained in [docs/SYSTEM_RE
 2. Extract the archive to any storage directory (for example, `D:\Tools\PSDPlayer` or an external USB drive).
 3. Execute `PSDPlayer.exe`.
 4. The portable edition operates self-contained without writing registry entries or requiring administrative credentials.
+
+### 3. Android Mobile Installation (`PSDPlayer-Pro-v2.5.0-Release-universal.apk`)
+1. Download `PSDPlayer-Pro-v2.5.0-Release-universal.apk` directly to your Android device (Android 6.0 Marshmallow to Android 15+).
+2. Tap the APK file in your device Downloads or File Manager.
+3. When prompted, permit installation from your browser or file manager.
+4. Tap **Install**. Launch **PSD Media Player Pro** from your application launcher.
+5. For developers and ADB deployment to Xiaomi Redmi Note 4 or other connected devices:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File android\scripts\install-to-device.ps1
+   ```
 
 ---
 

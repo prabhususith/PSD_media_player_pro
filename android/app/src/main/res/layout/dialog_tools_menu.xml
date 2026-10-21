@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_card"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Playback Tools &amp; Utilities"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- Playback Speed Section -->
+    <TextView
+        android:id="@+id/txtSpeedLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Speed: 1.0x"
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp" />
+
+    <SeekBar
+        android:id="@+id/seekBarSpeed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="375"
+        android:progress="75"
+        android:progressTint="@color/accent"
+        android:thumbTint="@color/accent" />
+
+    <!-- A-B Repeat Section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="A-B Repeat Loop"
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnSetPointA"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:text="Set A"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnSetPointB"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:text="Set B"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnClearAB"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="Clear"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- Audio/Video Sync Offset Slider -->
+    <TextView
+        android:id="@+id/txtAudioSyncLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Audio Sync: 0 ms"
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp" />
+
+    <SeekBar
+        android:id="@+id/seekBarAudioSync"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="10000"
+        android:progress="5000"
+        android:progressTint="@color/accent"
+        android:thumbTint="@color/accent" />
+
+    <!-- Action Buttons Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnTakeScreenshot"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="@string/screenshot"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnSleepTimer"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:text="@string/sleep_timer"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- Technical Codec & Stream Info Card -->
+    <TextView
+        android:id="@+id/txtTelemetryInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_controls_pill"
+        android:fontFamily="monospace"
+        android:padding="12dp"
+        android:text="Codec: H.264 / AAC\nDecoder: MediaCodec OMX.qcom.video.decoder.avc\nResolution: 1920x1080 @ 60fps\nBuffer: 3000ms"
+        android:textColor="@color/text_muted"
+        android:textSize="11sp" />
+</LinearLayout>

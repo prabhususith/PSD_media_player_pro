@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PSD Media Player Pro</string>
+    <string name="app_version">2.5.0 LTS</string>
+    <string name="app_author">Prabhu Kannan</string>
+    <string name="app_company">PSD Technologies</string>
+
+    <!-- Controls -->
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="stop">Stop</string>
+    <string name="forward_10s">+10s</string>
+    <string name="rewind_10s">-10s</string>
+    <string name="pin_controls">Pin Controls</string>
+    <string name="unpin_controls">Unpin Controls</string>
+    <string name="aspect_ratio">Aspect Ratio</string>
+    <string name="fit_screen">Fit</string>
+    <string name="crop_screen">Crop</string>
+    <string name="stretch_screen">Stretch</string>
+
+    <!-- Features -->
+    <string name="equalizer">Equalizer</string>
+    <string name="tools">Tools</string>
+    <string name="themes">Themes</string>
+    <string name="subtitles">Subtitles</string>
+    <string name="audio_tracks">Audio Tracks</string>
+    <string name="pip_mode">Picture-in-Picture</string>
+    <string name="background_play">Play in Background</string>
+    <string name="screenshot">Take Snapshot</string>
+    <string name="speed">Playback Speed</string>
+    <string name="sleep_timer">Sleep Timer</string>
+    <string name="media_info">Media Info</string>
+    <string name="ab_repeat">A-B Repeat</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">PSD Media Player Playback</string>
+    <string name="notification_channel_desc">Active background audio and video playback notifications</string>
+</resources>

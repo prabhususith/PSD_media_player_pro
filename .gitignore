@@ -35,6 +35,14 @@ crash.log
 *.temp
 scratch/
 
+# Android Build Outputs
+.gradle/
+**/build/
+local.properties
+*.apk
+*.aab
+.kotlin/
+
 # OS Generated Files
 Thumbs.db
 ehthumbs.db

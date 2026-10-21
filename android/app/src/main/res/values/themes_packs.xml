@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 110 Theme Archetypes ported to Android -->
+    <style name="Theme.PSDPlayer.KmplayerCarbon" parent="Theme.PSDPlayer.NoActionBar">
+        <item name="themeBackground">#121317</item>
+        <item name="themeSurface">#1B1D24</item>
+        <item name="themeAccent">#E67E22</item>
+        <item name="themeTextColor">#ECF0F1</item>
+        <item name="themeBorderColor">#2C3E50</item>
+    </style>
+
+    <style name="Theme.PSDPlayer.PotPlayerBlack" parent="Theme.PSDPlayer.NoActionBar">
+        <item name="themeBackground">#0B0B0D</item>
+        <item name="themeSurface">#141418</item>
+        <item name="themeAccent">#F1C40F</item>
+        <item name="themeTextColor">#FFFFFF</item>
+        <item name="themeBorderColor">#282830</item>
+    </style>
+
+    <style name="Theme.PSDPlayer.VlcOrange" parent="Theme.PSDPlayer.NoActionBar">
+        <item name="themeBackground">#16171B</item>
+        <item name="themeSurface">#202228</item>
+        <item name="themeAccent">#FF8800</item>
+        <item name="themeTextColor">#FFFFFF</item>
+        <item name="themeBorderColor">#383C48</item>
+    </style>
+
+    <style name="Theme.PSDPlayer.ObsidianDark" parent="Theme.PSDPlayer.NoActionBar">
+        <item name="themeBackground">#0B0C10</item>
+        <item name="themeSurface">#1F2833</item>
+        <item name="themeAccent">#66FCF1</item>
+        <item name="themeTextColor">#C5C6C7</item>
+        <item name="themeBorderColor">#45A29E</item>
+    </style>
+
+    <style name="Theme.PSDPlayer.OledBlack" parent="Theme.PSDPlayer.NoActionBar">
+        <item name="themeBackground">#000000</item>
+        <item name="themeSurface">#0A0A0A</item>
+        <item name="themeAccent">#00E5FF</item>
+        <item name="themeTextColor">#FFFFFF</item>
+        <item name="themeBorderColor">#222222</item>
+    </style>
+
+    <style name="Theme.PSDPlayer.CyberTeal" parent="Theme.PSDPlayer.NoActionBar">
+        <item name="themeBackground">#05131A</item>
+        <item name="themeSurface">#0B2533</item>
+        <item name="themeAccent">#00F5D4</item>
+        <item name="themeTextColor">#E0FBFC</item>
+        <item name="themeBorderColor">#1D4E68</item>
+    </style>
+
+    <style name="Theme.PSDPlayer.MatrixEmerald" parent="Theme.PSDPlayer.NoActionBar">
+        <item name="themeBackground">#020D05</item>
+        <item name="themeSurface">#061A0C</item>
+        <item name="themeAccent">#00FF66</item>
+        <item name="themeTextColor">#B8FFD2</item>
+        <item name="themeBorderColor">#0E3D1B</item>
+    </style>
+
+    <style name="Theme.PSDPlayer.TokyoNight" parent="Theme.PSDPlayer.NoActionBar">
+        <item name="themeBackground">#1A1B26</item>
+        <item name="themeSurface">#24283B</item>
+        <item name="themeAccent">#7AA2F7</item>
+        <item name="themeTextColor">#C0CAF5</item>
+        <item name="themeBorderColor">#414868</item>
+    </style>
+
+    <style name="Theme.PSDPlayer.Dracula" parent="Theme.PSDPlayer.NoActionBar">
+        <item name="themeBackground">#282A36</item>
+        <item name="themeSurface">#343746</item>
+        <item name="themeAccent">#BD93F9</item>
+        <item name="themeTextColor">#F8F8F2</item>
+        <item name="themeBorderColor">#6272A4</item>
+    </style>
+
+    <style name="Theme.PSDPlayer.Synthwave84" parent="Theme.PSDPlayer.NoActionBar">
+        <item name="themeBackground">#261447</item>
+        <item name="themeSurface">#2B1B54</item>
+        <item name="themeAccent">#FF2A85</item>
+        <item name="themeTextColor">#FDF500</item>
+        <item name="themeBorderColor">#FF7EDB</item>
+    </style>
+</resources>
