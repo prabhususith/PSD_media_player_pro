@@ -6,18 +6,12 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <!-- Storage and Camera Permissions (Clean legacy compatibility for Android 6.0) -->
+    <!-- Storage Permissions -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
 
-    <!-- Foreground Playback & Overlay Permissions -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Overlay & Audio Playback Permissions -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
-    <!-- Hardware Features -->
-    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
         android:name=".PSDPlayerApplication"
@@ -28,62 +22,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:hardwareAccelerated="true"
-        android:largeHeap="true"
         android:theme="@style/Theme.PSDPlayer.NoActionBar">
 
         <!-- Main Video & Media Surface Player Activity -->
         <activity
             android:name=".ui.PlayerActivity"
             android:exported="true"
-            android:supportsPictureInPicture="true"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboardHidden|uiMode"
-            android:launchMode="singleTask"
-            android:resizeableActivity="true">
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-            <!-- Video File Association -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file" />
-                <data android:scheme="content" />
-                <data android:mimeType="video/*" />
-            </intent-filter>
-
-            <!-- Audio File Association -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file" />
-                <data android:scheme="content" />
-                <data android:mimeType="audio/*" />
-            </intent-filter>
-
-            <!-- Streaming URL Association (HLS, RTSP, HTTP/HTTPS) -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:scheme="rtsp" />
-                <data android:mimeType="application/x-mpegurl" />
-                <data android:mimeType="application/vnd.apple.mpegurl" />
-                <data android:mimeType="video/*" />
-            </intent-filter>
         </activity>
 
-        <!-- Background Audio & Notification Service (Legacy API 23 clean) -->
+        <!-- Background Audio & Notification Service -->
         <service
             android:name=".audio.AudioService"
             android:exported="false" />
 
-        <!-- Floating Picture-in-Picture Service for Android 6.0/7.0 -->
+        <!-- Floating Picture-in-Picture Service for Android 6.0/7.0 Overlay Mode -->
         <service
             android:name=".ui.FloatingPipService"
             android:exported="false" />

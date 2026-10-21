@@ -134,6 +134,6 @@ The standalone portable distributions and Inno Setup installers include self-con
 - **Hardware Acceleration**: Direct zero-copy `SurfaceView` video rendering backed by Android `MediaCodec` with graceful multi-threaded CPU decoder fallback (Dav1d, FFmpeg).
 - **Application Icon Format**: Strict raster PNG bitmap assets deployed across all density buckets (`mipmap-mdpi`, `mipmap-hdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, `mipmap-xxxhdpi`) preventing Android `PackageParser` crashes caused by XML vector or adaptive icons.
 - **Java Runtime Desugaring**: Full Java 8+ API desugaring (`desugar_jdk_libs:2.0.4`) via L8 desugar compiler, ensuring Java bytecode compatibility on older Android runtimes.
-- **Universal Release Deliverable**: `PSDPlayer-Pro-v2.5.0-Release-universal.apk` (Size: 8,607,905 bytes, SHA-256: `701C85018AE4EB7C82109189D5F52BBBB5FCEE3733FCC2D0685AF047EF97A44A`).
-- **Dedicated Redmi Note 4 Deliverable**: `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` (Size: 8,607,905 bytes, SHA-256: `701C85018AE4EB7C82109189D5F52BBBB5FCEE3733FCC2D0685AF047EF97A44A`).
-- **Redmi Note 4 Debug Mirror Deliverable**: `PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk` (Size: 11,420,215 bytes, SHA-256: `8CDB211C47EE991BAABA2676271768A9EF5D46074A94C3283285B5B5426781CB`).
+- **Universal Release Deliverable**: `PSDPlayer-Pro-v2.5.0-Release-universal.apk` (Size: 8,393,411 bytes, SHA-256: `E642782B1F1D136B6291983B256F8B468855D83FABE8ACB99AA93D5D841D4EB6`).
+- **Dedicated Redmi Note 4 Deliverable**: `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` (Size: 8,393,411 bytes, SHA-256: `E642782B1F1D136B6291983B256F8B468855D83FABE8ACB99AA93D5D841D4EB6`).
+- **Redmi Note 4 Debug Mirror Deliverable**: `PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk` (Size: 10,286,755 bytes, SHA-256: `F0198F3804B051EED35A3FB496CE0493A248C3D4D099CFB674D3E10F718EA408`).

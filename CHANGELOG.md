@@ -16,9 +16,11 @@ Support Contact: prabhukannanmail@gmail.com
 - **Xiaomi Redmi Note 4 & Android 5.0/6.0 APK Installation**: Fully resolved package installer failure ("There was a problem while parsing the package") by aligning build configuration with working reference project (`GoogleNotesPsd`).
   - Lowered `minSdkVersion` to `21` (Android 5.0 Lollipop+), preventing `INSTALL_FAILED_OLDER_SDK` rejection on Redmi Note 4 devices running Android 5.0/5.1 or MIUI ROMs reporting base SDK level 21/22.
   - Added `android:installLocation="auto"` in application manifest to permit flexible storage placement by MIUI Package Installer.
-  - Signed with standard Android debug key and dual Scheme v1 + Scheme v2, matching the exact certificate fingerprint of the working reference application.
+  - Signed with standard Android debug key and dual Scheme v1 + Scheme v2, matching the exact certificate fingerprint (`305542cf5500d1b90ce60426a8cf14096d619781998128406f7281ff68a3e8bd`) of the working reference application.
+  - Removed unsupported Android 7.0+ (API 24+) manifest attributes (`supportsPictureInPicture`, `resizeableActivity`) from `<activity>` declaration to prevent legacy Android 5.0/6.0 `PackageParser` XML schema parse failures.
+  - Streamlined `IntentFilter` configuration to standard `MAIN` and `LAUNCHER` actions, eliminating custom MIME type parser rejections during APK installation.
   - Eliminated vector/adaptive XML icon references in package manifest; generated and deployed native raster PNG icons across all density buckets (`mipmap-mdpi`, `mipmap-hdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, `mipmap-xxxhdpi`).
-  - Enabled L8 core library desugaring (`com.android.tools:desugar_jdk_libs:2.0.4`) with Java 8 bytecode targets (`JavaVersion.VERSION_1_8` / `jvmTarget = "1.8"`).
+  - Standardized toolchain on Java 17 bytecode execution matching reference architecture.
   - Explicitly registered `PSDPlayerApplication` with `MultiDex.install(this)` inside `attachBaseContext`.
   - Packaged and distributed `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk`, `PSDPlayer-Pro-v2.5.0-Release-universal.apk`, and `PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk`.
 

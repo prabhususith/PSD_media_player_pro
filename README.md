@@ -101,9 +101,9 @@ All official release binaries are compiled with Release optimizations, code-sign
 | **Standalone Executable** | x64 | `.exe` | 205.43 MB | Direct single-file executable. Runs without installation or background service prerequisites. | [Download PSDPlayer.exe](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer.exe) |
 | **Portable Archive (x64)** | x64 | `.zip` | 447.55 MB | Complete self-contained portable distribution. Extract and run from local drives or USB media. | [Download PSDPlayer-Pro-v2.5.0-Portable-win-x64.zip](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-Portable-win-x64.zip) |
 | **Portable Archive (ARM64)**| ARM64 | `.zip` | 435.06 MB | Native ARM64 portable package compiled for Snapdragon X Elite, X Plus, and Surface Pro ARM64 devices. | [Download PSDPlayer-Pro-v2.5.0-Portable-win-arm64.zip](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-Portable-win-arm64.zip) |
-| **Android Universal Package** | Universal (ARM64 / ARMv7) | `.apk` | 8.21 MB | Native Android edition for Android 5.0+ (API 21-35), signed with dual Scheme v1 + v2, raster PNG icons, Java 8 desugaring, fully validated on Xiaomi Redmi Note 4 and modern Android devices. | [Download PSDPlayer-Pro-v2.5.0-Release-universal.apk](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-Release-universal.apk) |
-| **Android Redmi Note 4 Edition** | Universal (ARM64 / ARMv7) | `.apk` | 8.21 MB | Dedicated package verified with Scheme v1 JAR signing, legacy MultiDex AOT compilation, raster PNG icons, and API 21+ base for Xiaomi Redmi Note 4 (MIUI 8/9/10). | [Download PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk) |
-| **Android Redmi Note 4 (Debug Mirror)** | Universal (ARM64 / ARMv7) | `.apk` | 10.89 MB | Direct debug variant signed with standard Android debug key, identical to reference GoogleNotes build profile for maximum compatibility on MIUI. | [Download PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk) |
+| **Android Universal Package** | Universal (ARM64 / ARMv7) | `.apk` | 8.00 MB | Native Android edition for Android 5.0+ (API 21-35), signed with dual Scheme v1 + v2, raster PNG icons, Java 17 toolchain, fully validated on Xiaomi Redmi Note 4 and modern Android devices. | [Download PSDPlayer-Pro-v2.5.0-Release-universal.apk](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-Release-universal.apk) |
+| **Android Redmi Note 4 Edition** | Universal (ARM64 / ARMv7) | `.apk` | 8.00 MB | Dedicated release package verified with Scheme v1 JAR signing, clean manifest matching GoogleNotes reference build, raster PNG icons, and API 21+ base for Xiaomi Redmi Note 4 (MIUI 8/9/10). | [Download PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk) |
+| **Android Redmi Note 4 (Debug Mirror)** | Universal (ARM64 / ARMv7) | `.apk` | 9.81 MB | Direct debug variant signed with standard Android debug key and debuggable flag enabled, exact structural mirror of GoogleNotes reference build for maximum compatibility on MIUI. | [Download PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk](https://github.com/prabhususith/PSD_media_player_pro/releases/download/v2.5.0/PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk) |
 
 *Browse all release notes, release tags, and historical artifacts on the [Official GitHub Releases Portal](https://github.com/prabhususith/PSD_media_player_pro/releases/tag/v2.5.0).*
 
@@ -132,9 +132,9 @@ certutil -hashfile PSDPlayer-Pro-Setup-v2.5.0-x64.exe SHA256
 | `PSDPlayer.exe` | 215,412,010 | `801EACA7A8F500F5A36A3DA1D10D0354E22465C12403F17B1433BD199A5D5A5B` |
 | `PSDPlayer-Pro-v2.5.0-Portable-win-x64.zip` | 469,287,881 | `E55BC744737FDDBBAED205AF522C941FB217B5B63AB9A255D979C82D00B87BC1` |
 | `PSDPlayer-Pro-v2.5.0-Portable-win-arm64.zip` | 456,191,583 | `77CC0749E0E48D7A142406AC9E2ACBCB8EB408C77DA338A54583ED601F0CEF95` |
-| `PSDPlayer-Pro-v2.5.0-Release-universal.apk` | 8,607,905 | `701C85018AE4EB7C82109189D5F52BBBB5FCEE3733FCC2D0685AF047EF97A44A` |
-| `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` | 8,607,905 | `701C85018AE4EB7C82109189D5F52BBBB5FCEE3733FCC2D0685AF047EF97A44A` |
-| `PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk` | 11,420,215 | `8CDB211C47EE991BAABA2676271768A9EF5D46074A94C3283285B5B5426781CB` |
+| `PSDPlayer-Pro-v2.5.0-Release-universal.apk` | 8,393,411 | `E642782B1F1D136B6291983B256F8B468855D83FABE8ACB99AA93D5D841D4EB6` |
+| `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` | 8,393,411 | `E642782B1F1D136B6291983B256F8B468855D83FABE8ACB99AA93D5D841D4EB6` |
+| `PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk` | 10,286,755 | `F0198F3804B051EED35A3FB496CE0493A248C3D4D099CFB674D3E10F718EA408` |
 
 ---
 
