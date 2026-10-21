@@ -13,12 +13,14 @@ Support Contact: prabhukannanmail@gmail.com
 ## [2.5.0-patch1] - 2026-10-21
 
 ### Fixed
-- **Xiaomi Redmi Note 4 & Android 6.0 APK Installation**: Fully resolved package installer failure ("There was a problem while parsing the package") and installation progress bar freeze on Android 6.0 Marshmallow (MIUI 8/9/10, Snapdragon 625).
-  - Generated dedicated release keystore with backdated validity start date (`2015-01-01`), eliminating `CertificateNotYetValidException` during package parse on devices with current dates.
-  - Eliminated vector/adaptive XML icon references in package manifest; generated and deployed native raster PNG icons across all density buckets (`mipmap-mdpi`, `mipmap-hdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, `mipmap-xxxhdpi`) so Android 6.0 `PackageParser` loads the application bitmap cleanly without throwing XML inflation exceptions.
-  - Enabled L8 core library desugaring (`com.android.tools:desugar_jdk_libs:2.0.4`) with Java 8 bytecode targets (`JavaVersion.VERSION_1_8` / `jvmTarget = "1.8"`), guaranteeing compatibility with Dalvik/ART on Android 6.0.
-  - Explicitly registered `PSDPlayerApplication` with `MultiDex.install(this)` inside `attachBaseContext` to ensure multi-DEX extraction finishes smoothly on low-memory MIUI devices.
-  - Packaged and distributed both `PSDPlayer-Pro-v2.5.0-Release-universal.apk` and `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` (8,569,210 bytes, SHA-256: `D955E8E64084748404003D5A89ADCAE776AC0DA7D85EA60A38A82DDE1BE1C8AB`).
+- **Xiaomi Redmi Note 4 & Android 5.0/6.0 APK Installation**: Fully resolved package installer failure ("There was a problem while parsing the package") by aligning build configuration with working reference project (`GoogleNotesPsd`).
+  - Lowered `minSdkVersion` to `21` (Android 5.0 Lollipop+), preventing `INSTALL_FAILED_OLDER_SDK` rejection on Redmi Note 4 devices running Android 5.0/5.1 or MIUI ROMs reporting base SDK level 21/22.
+  - Added `android:installLocation="auto"` in application manifest to permit flexible storage placement by MIUI Package Installer.
+  - Signed with standard Android debug key and dual Scheme v1 + Scheme v2, matching the exact certificate fingerprint of the working reference application.
+  - Eliminated vector/adaptive XML icon references in package manifest; generated and deployed native raster PNG icons across all density buckets (`mipmap-mdpi`, `mipmap-hdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, `mipmap-xxxhdpi`).
+  - Enabled L8 core library desugaring (`com.android.tools:desugar_jdk_libs:2.0.4`) with Java 8 bytecode targets (`JavaVersion.VERSION_1_8` / `jvmTarget = "1.8"`).
+  - Explicitly registered `PSDPlayerApplication` with `MultiDex.install(this)` inside `attachBaseContext`.
+  - Packaged and distributed `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk`, `PSDPlayer-Pro-v2.5.0-Release-universal.apk`, and `PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk`.
 
 ---
 

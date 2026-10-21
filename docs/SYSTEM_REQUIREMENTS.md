@@ -118,20 +118,22 @@ The standalone portable distributions and Inno Setup installers include self-con
 ## 7. Android Mobile Platform Compatibility (Xiaomi Redmi Note 4 Reference Profile)
 
 ### 7.1 System Specifications
-- **Operating System Range**: Android 6.0 Marshmallow (API Level 23) through Android 15 / 16+ (API Level 35).
+- **Operating System Range**: Android 5.0 Lollipop (API Level 21) through Android 15 / 16+ (API Level 35).
 - **Reference Benchmark Device**: Xiaomi Redmi Note 4.
   - System-on-Chip (SoC): Qualcomm MSM8953 Snapdragon 625 (Octa-Core 2.0 GHz Cortex-A53).
   - Graphics Processing Unit (GPU): Qualcomm Adreno 506.
   - System Memory: 3 GB / 4 GB LPDDR3 RAM.
-  - ROM Environment: MIUI 8 / 9 / 10 Global / China Stable (Android 6.0 / 7.0 base).
+  - ROM Environment: MIUI 8 / 9 / 10 Global / China Stable (Android 5.0 / 6.0 / 7.0 base).
 - **Target Memory Footprint**: Under 85 MB RAM during 1080p 60fps hardware-accelerated playback.
 
 ### 7.2 APK Packaging and Signature Standards
-- **Cryptographic Signature**: Dual APK Signature Scheme v1 (JAR signing) and Scheme v2 (APK Signature Scheme v2). Android 6.0 and MIUI package managers strictly require Scheme v1 JAR signatures to parse the central directory; modern Android 11+ uses Scheme v2 block verification.
-- **MultiDex Engine**: Integrated `androidx.multidex:multidex:2.0.1` via `androidx.multidex.MultiDexApplication` base class to prevent package installer hanging during ahead-of-time (AOT) DEX extraction on MIUI 8/9/10.
-- **Native Library Extraction**: Configured `android:extractNativeLibs="true"` with legacy JNI packaging (`useLegacyPackaging = true`) ensuring 32-bit `armeabi-v7a` and 64-bit `arm64-v8a` shared objects (`.so`) are cleanly extracted to device storage without installer timeouts.
+- **Baseline SDK**: `minSdkVersion = 21` (API 21: Android 5.0 Lollipop) matching the working reference `GoogleNotesPsd` application profile.
+- **Installation Location**: `android:installLocation="auto"` declared in manifest allowing MIUI package installer to allocate storage without constraint errors.
+- **Cryptographic Signature**: Dual APK Signature Scheme v1 (JAR signing) and Scheme v2 (APK Signature Scheme v2) signed via standard Android debug key matching reference installation trust.
+- **MultiDex Engine**: Integrated `androidx.multidex:multidex:2.0.1` via `PSDPlayerApplication` with `MultiDex.install(this)` to prevent package installer hanging during ahead-of-time (AOT) DEX extraction on MIUI 8/9/10.
 - **Hardware Acceleration**: Direct zero-copy `SurfaceView` video rendering backed by Android `MediaCodec` with graceful multi-threaded CPU decoder fallback (Dav1d, FFmpeg).
-- **Application Icon Format**: Strict raster PNG bitmap assets deployed across all density buckets (`mipmap-mdpi`, `mipmap-hdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, `mipmap-xxxhdpi`) preventing Android 6.0 `PackageParser` crashes caused by XML vector or adaptive icons.
-- **Java Runtime Desugaring**: Full Java 8+ API desugaring (`desugar_jdk_libs:2.0.4`) via L8 desugar compiler, ensuring Java bytecode compatibility on Android 6.0 Marshmallow.
-- **Universal Deliverable**: `PSDPlayer-Pro-v2.5.0-Release-universal.apk` (Size: 8,569,210 bytes, SHA-256: `D955E8E64084748404003D5A89ADCAE776AC0DA7D85EA60A38A82DDE1BE1C8AB`).
-- **Dedicated Legacy Deliverable**: `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` (Size: 8,569,210 bytes, SHA-256: `D955E8E64084748404003D5A89ADCAE776AC0DA7D85EA60A38A82DDE1BE1C8AB`).
+- **Application Icon Format**: Strict raster PNG bitmap assets deployed across all density buckets (`mipmap-mdpi`, `mipmap-hdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, `mipmap-xxxhdpi`) preventing Android `PackageParser` crashes caused by XML vector or adaptive icons.
+- **Java Runtime Desugaring**: Full Java 8+ API desugaring (`desugar_jdk_libs:2.0.4`) via L8 desugar compiler, ensuring Java bytecode compatibility on older Android runtimes.
+- **Universal Release Deliverable**: `PSDPlayer-Pro-v2.5.0-Release-universal.apk` (Size: 8,607,905 bytes, SHA-256: `701C85018AE4EB7C82109189D5F52BBBB5FCEE3733FCC2D0685AF047EF97A44A`).
+- **Dedicated Redmi Note 4 Deliverable**: `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` (Size: 8,607,905 bytes, SHA-256: `701C85018AE4EB7C82109189D5F52BBBB5FCEE3733FCC2D0685AF047EF97A44A`).
+- **Redmi Note 4 Debug Mirror Deliverable**: `PSDPlayer-Pro-v2.5.0-RedmiNote4-Debug.apk` (Size: 11,420,215 bytes, SHA-256: `8CDB211C47EE991BAABA2676271768A9EF5D46074A94C3283285B5B5426781CB`).

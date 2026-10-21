@@ -9,23 +9,27 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("release.keystore")
+            storeFile = file("debug.keystore")
             storePassword = "android"
-            keyAlias = "psdplayerkey"
+            keyAlias = "androiddebugkey"
             keyPassword = "android"
-            enableV1Signing = true // CRITICAL: Required for Android 6.0 JAR signature verification
+            enableV1Signing = true // CRITICAL: Required for legacy Android JAR signature verification
             enableV2Signing = true // Full APK Signature Scheme v2 for modern Android
         }
     }
 
     defaultConfig {
         applicationId = "com.psdtechnologies.psdplayer"
-        minSdk = 23
-        targetSdk = 33 // Stable legacy binder range for Android 6.0 compatibility
+        minSdk = 21 // Android 5.0+ compatibility matching GoogleNotes reference profile
+        targetSdk = 33 // Stable legacy binder range for Android 5.0 - 6.0 compatibility
         versionCode = 2501
         versionName = "2.5.0-patch1"
 
         multiDexEnabled = true
+
+        vectorDrawables {
+            useSupportLibrary = true
+        }
 
         ndk {
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
@@ -66,9 +70,6 @@ android {
     }
 
     packaging {
-        jniLibs {
-            useLegacyPackaging = true // Uncompressed extracted native libs for Android 6.0 / MIUI 8
-        }
         resources {
             excludes += setOf(
                 "META-INF/DEPENDENCIES",
