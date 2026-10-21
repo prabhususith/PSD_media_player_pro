@@ -25,6 +25,7 @@ class AudioService : Service() {
     private var mediaSession: MediaSessionCompat? = null
 
     companion object {
+        const val CHANNEL_ID = "psd_playback_channel"
         const val NOTIFICATION_ID = 2501
         const val ACTION_PLAY = "com.psdtechnologies.psdplayer.ACTION_PLAY"
         const val ACTION_PAUSE = "com.psdtechnologies.psdplayer.ACTION_PAUSE"
@@ -51,8 +52,24 @@ class AudioService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        createNotificationChannel()
         setupMediaSession()
         startForeground(NOTIFICATION_ID, buildNotification("PSD Media Player", isPlaying = true))
+    }
+
+    private fun createNotificationChannel() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            val name = getString(R.string.notification_channel_name)
+            val descriptionText = getString(R.string.notification_channel_desc)
+            val channel = android.app.NotificationChannel(
+                CHANNEL_ID, name, android.app.NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                description = descriptionText
+                setShowBadge(false)
+            }
+            val manager = getSystemService(android.app.NotificationManager::class.java)
+            manager?.createNotificationChannel(channel)
+        }
     }
 
     private fun setupMediaSession() {
@@ -104,7 +121,7 @@ class AudioService : Service() {
             this, 3, forwardIntent, PendingIntent.FLAG_IMMUTABLE
         )
 
-        return NotificationCompat.Builder(this, PSDPlayerApplication.PLAYBACK_CHANNEL_ID)
+        return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(title)
             .setContentText("PSD Media Player Pro — Background Playback Active")
             .setSmallIcon(R.drawable.ic_play)

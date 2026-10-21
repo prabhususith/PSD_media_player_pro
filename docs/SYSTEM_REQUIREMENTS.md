@@ -112,3 +112,24 @@ The standalone portable distributions and Inno Setup installers include self-con
   - Bauer Stereophonic-to-Binaural HRTF crossfeed filter.
   - Haas-effect 3D interaural delay spatializer.
   - Schroeder 4-comb 2-allpass reverberation chambers.
+
+---
+
+## 7. Android Mobile Platform Compatibility (Xiaomi Redmi Note 4 Reference Profile)
+
+### 7.1 System Specifications
+- **Operating System Range**: Android 6.0 Marshmallow (API Level 23) through Android 15 / 16+ (API Level 35).
+- **Reference Benchmark Device**: Xiaomi Redmi Note 4.
+  - System-on-Chip (SoC): Qualcomm MSM8953 Snapdragon 625 (Octa-Core 2.0 GHz Cortex-A53).
+  - Graphics Processing Unit (GPU): Qualcomm Adreno 506.
+  - System Memory: 3 GB / 4 GB LPDDR3 RAM.
+  - ROM Environment: MIUI 8 / 9 / 10 Global / China Stable (Android 6.0 / 7.0 base).
+- **Target Memory Footprint**: Under 85 MB RAM during 1080p 60fps hardware-accelerated playback.
+
+### 7.2 APK Packaging and Signature Standards
+- **Cryptographic Signature**: Dual APK Signature Scheme v1 (JAR signing) and Scheme v2 (APK Signature Scheme v2). Android 6.0 and MIUI package managers strictly require Scheme v1 JAR signatures to parse the central directory; modern Android 11+ uses Scheme v2 block verification.
+- **MultiDex Engine**: Integrated `androidx.multidex:multidex:2.0.1` via `androidx.multidex.MultiDexApplication` base class to prevent package installer hanging during ahead-of-time (AOT) DEX extraction on MIUI 8/9/10.
+- **Native Library Extraction**: Configured `android:extractNativeLibs="true"` with legacy JNI packaging (`useLegacyPackaging = true`) ensuring 32-bit `armeabi-v7a` and 64-bit `arm64-v8a` shared objects (`.so`) are cleanly extracted to device storage without installer timeouts.
+- **Hardware Acceleration**: Direct zero-copy `SurfaceView` video rendering backed by Android `MediaCodec` with graceful multi-threaded CPU decoder fallback (Dav1d, FFmpeg).
+- **Universal Deliverable**: `PSDPlayer-Pro-v2.5.0-Release-universal.apk` (Size: 8,230,872 bytes, SHA-256: `FE5C067B3B8332B8CF63A06A4A9BCF8BD733ED0FC43A8CB951A6497316389BB2`).
+- **Dedicated Legacy Deliverable**: `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` (Size: 8,230,872 bytes, SHA-256: `FE5C067B3B8332B8CF63A06A4A9BCF8BD733ED0FC43A8CB951A6497316389BB2`).

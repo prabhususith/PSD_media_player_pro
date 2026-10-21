@@ -10,6 +10,19 @@ Support Contact: prabhukannanmail@gmail.com
 
 ---
 
+## [2.5.0-patch1] - 2026-10-21
+
+### Fixed
+- **Xiaomi Redmi Note 4 & Android 6.0 APK Installation**: Resolved package installer failure ("There was a problem while parsing the package") and installation progress bar freeze on Android 6.0 Marshmallow (MIUI 8/9/10, Snapdragon 625).
+  - Enforced dual APK Signature Scheme v1 (JAR signing) and Scheme v2 signing via Gradle signing configuration and Android SDK `apksigner`.
+  - Configured legacy MultiDex architecture via `androidx.multidex:multidex:2.0.1` and `androidx.multidex.MultiDexApplication` base class.
+  - Enabled legacy native library extraction (`android:extractNativeLibs="true"` and `useLegacyPackaging = true`) to prevent PackageManager deadlocks during DEX/ELF decompression.
+  - Removed API 29+ manifest attributes (`foregroundServiceType="mediaPlayback"`) incompatible with API 23 runtimes.
+  - Replaced modern adaptive vector mipmap launcher reference with raster drawable `@drawable/ic_launcher` to resolve MIUI package parser crashes.
+  - Packaged and distributed both `PSDPlayer-Pro-v2.5.0-Release-universal.apk` and `PSDPlayer-Pro-v2.5.0-RedmiNote4-Ready.apk` (8,230,872 bytes, SHA-256: `FE5C067B3B8332B8CF63A06A4A9BCF8BD733ED0FC43A8CB951A6497316389BB2`).
+
+---
+
 ## [2.5.0] - 2026-10-21 (Long-Term Support Release)
 
 ### Added

@@ -1,27 +1,21 @@
 package com.psdtechnologies.psdplayer
 
-import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import androidx.multidex.MultiDex
+import androidx.multidex.MultiDexApplication
 
 /**
  * Application Entry Point for PSD Media Player Pro (Android Edition).
  * Author: Prabhu Kannan (PSD Technologies)
  */
-class PSDPlayerApplication : Application() {
+class PSDPlayerApplication : MultiDexApplication() {
 
     companion object {
         const val PLAYBACK_CHANNEL_ID = "psd_playback_channel"
         lateinit var instance: PSDPlayerApplication
             private set
-    }
-
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
-        MultiDex.install(this)
     }
 
     override fun onCreate() {
